@@ -2381,6 +2381,71 @@ app.delete('/api/twitch/channels/:login', async (req, res) => {
   res.json(await describeTwitchChannels());
 });
 
+
+// ============================================
+// STATION TAPS
+// ============================================
+
+// How often each station has been chosen from the index. Kept on the device
+// rather than in the browser's storage because it is the kitchen's listening
+// history, not one browser profile's: reloading the Electron shell or
+// clearing its cache must not lose it. Its own file for the same reason the
+// Twitch channel list has one, config.json holds real secrets and the server
+// never rewrites that.
+const stationTapsPath = path.join(__dirname, 'station-taps.json');
+
+// Catalogue slugs: lowercase alphanumerics and hyphens. Validated because the
+// value becomes an object key that is written back to disk.
+const STATION_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
+
+function loadStationTaps() {
+  try {
+    if (fs.existsSync(stationTapsPath)) {
+      const data = JSON.parse(fs.readFileSync(stationTapsPath, 'utf8'));
+      if (data?.taps && typeof data.taps === 'object') {
+        const clean = {};
+        for (const [id, count] of Object.entries(data.taps)) {
+          if (STATION_ID.test(id) && Number.isInteger(count) && count > 0) {
+            clean[id] = count;
+          }
+        }
+        return clean;
+      }
+    }
+  } catch (e) {
+    console.error('[Taps] Could not read the tap counts:', e.message);
+  }
+  return {};
+}
+
+function saveStationTaps(taps) {
+  try {
+    fs.writeFileSync(stationTapsPath, JSON.stringify({ taps }, null, 2));
+    return true;
+  } catch (e) {
+    console.error('[Taps] Could not save the tap counts:', e.message);
+    return false;
+  }
+}
+
+let stationTaps = loadStationTaps();
+
+app.get('/api/stations/taps', (req, res) => {
+  res.json({ taps: stationTaps });
+});
+
+app.post('/api/stations/taps/:id', (req, res) => {
+  const id = String(req.params.id ?? '');
+  if (!STATION_ID.test(id)) {
+    return res.status(400).json({ error: 'That is not a station id.' });
+  }
+  stationTaps = { ...stationTaps, [id]: (stationTaps[id] ?? 0) + 1 };
+  // A failed write costs this one count rather than the running total, so the
+  // tap still answers with the number the index should now show.
+  saveStationTaps(stationTaps);
+  res.json({ id, taps: stationTaps[id] });
+});
+
 // ============================================
 // KIOSK MODE - App Launcher Endpoints
 // ============================================

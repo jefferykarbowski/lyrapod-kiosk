@@ -9,7 +9,9 @@ import { classNames, initialsOf, stationLines } from '../../lib/format';
  * each omitted when it is not known: who the station is, where it is, what it
  * is broadcasting right now, and what it plays. The catalogue knows a place
  * for 225 of the 255 and a genre for 93, so most cards are shorter than this
- * one could be — an empty line is better than a filled-in guess.
+ * one could be — an empty line is better than a filled-in guess. A fifth
+ * number, how often the station has been chosen, appears only while the index
+ * is ordered by it.
  *
  * The live cell is marked by the source colour on its left seam and by its
  * mark moving. Never by a fill or a glow.
@@ -23,6 +25,7 @@ export default function StationCard({
   onPlay,
   highlightGenre,
   genreNames,
+  taps = 0,
 }) {
   const [artworkFailed, setArtworkFailed] = useState(false);
   const { place, tagline } = stationLines(station);
@@ -76,6 +79,19 @@ export default function StationCard({
             </span>
           )}
         </span>
+
+        {/* How often this station has been chosen. Drawn only while the index
+            is ordered by it, where the number is what explains the order; the
+            rest of the time it would be a fifth claim nobody asked for. */}
+        {taps > 0 && (
+          <span
+            className="flex-shrink-0 font-mono text-[12px] tnum"
+            style={{ color: 'var(--chalk-3)' }}
+            aria-label={`Chosen ${taps} ${taps === 1 ? 'time' : 'times'}`}
+          >
+            {taps}
+          </span>
+        )}
 
         {/* Playing: a live comb, the radio mark, rather than an icon badge. */}
         {live && (

@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRadio } from '../../contexts/RadioContext';
 import { useBand } from '../../hooks/useBand';
+import { useStationTaps } from '../../hooks/useStationTaps';
 import { toRadioEntries } from '../../lib/band';
 import { GENRES } from '../../config/genres';
 import GenreRail, { GenreStrip } from './GenreRail';
@@ -14,16 +15,36 @@ import { classNames } from '../../lib/format';
  * dial*: next, previous and shuffle step through exactly these stations in
  * exactly this order, so narrowing to Jazz turns the transport into a jazz
  * tuner without a separate control for it.
+ *
+ * Taps is the default order. On a catalogue nobody has played yet every count
+ * is zero and it reads exactly as A-Z; it becomes the kitchen's own order as
+ * the kitchen uses it.
  */
 export default function StationGrid() {
   const { stations, nowPlaying, status, metadata, playStation } = useRadio();
+  const { taps, loaded: tapsLoaded, recordTap } = useStationTaps();
   const [genre, setGenre] = useState(null);
-  const [sort, setSort] = useState('name');
+  const [sort, setSort] = useState('taps');
 
   const genreNames = useMemo(
     () => new Map(GENRES.map((entry) => [entry.slug, entry.name])),
     [],
   );
+
+  // Ordering reads a snapshot of the counts rather than the live ones. A tap
+  // raises its station's count, and re-sorting the grid under the finger that
+  // just tapped would move every other cell while the stream is still
+  // starting. The snapshot is retaken whenever the view changes, so the new
+  // order is waiting the next time you pick a sort or a genre.
+  const latestTaps = useRef(taps);
+  useEffect(() => {
+    latestTaps.current = taps;
+  }, [taps]);
+
+  const [ranking, setRanking] = useState(taps);
+  useEffect(() => {
+    setRanking(latestTaps.current);
+  }, [sort, genre, tapsLoaded]);
 
   const counts = useMemo(() => {
     const tally = new Map();
@@ -59,8 +80,20 @@ export default function StationGrid() {
           || a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
       });
     }
+
+    // Most chosen first. Everything untapped keeps its alphabetical order
+    // rather than falling into an arbitrary one, so the tail of the list is
+    // still something you can read down.
+    if (sort === 'taps') {
+      return [...filtered].sort(
+        (a, b) =>
+          (ranking[b.id] ?? 0) - (ranking[a.id] ?? 0)
+          || a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }),
+      );
+    }
+
     return filtered;
-  }, [stations, genre, sort]);
+  }, [stations, genre, sort, ranking]);
 
   const band = useMemo(
     () => ({
@@ -77,6 +110,19 @@ export default function StationGrid() {
   useBand(band);
 
   const loadedId = nowPlaying?.station?.id ?? null;
+
+  // A tap on the station already playing is a pause, and is not counted: the
+  // number under Taps is how often you chose a station, not how often you
+  // touched its cell. Stepping the dial is not a tap either, for the same
+  // reason - the label would stop being true.
+  const handlePlay = useCallback(
+    (station) => {
+      const pausing = loadedId === station.id && status === 'playing';
+      if (!pausing) recordTap(station.id);
+      playStation(station);
+    },
+    [loadedId, status, recordTap, playStation],
+  );
 
   if (!stations.length) {
     return (
@@ -132,6 +178,7 @@ export default function StationGrid() {
 
           <div className="flex flex-shrink-0 items-center gap-px" role="group" aria-label="Order">
             {[
+              ['taps', 'Taps'],
               ['name', 'A–Z'],
               ['place', 'By place'],
             ].map(([key, label]) => (
@@ -175,9 +222,14 @@ export default function StationGrid() {
                       live={loaded && status === 'playing'}
                       connecting={loaded && status === 'connecting'}
                       metadata={metadata}
-                      onPlay={playStation}
+                      onPlay={handlePlay}
                       highlightGenre={genre === 'unfiled' ? null : genre}
                       genreNames={genreNames}
+                      // The count is shown only where it is doing the
+                      // ordering, and the live number is used rather than the
+                      // snapshot: the tap you just made reads back at once,
+                      // while its position waits for the next view.
+                      taps={sort === 'taps' ? (taps[station.id] ?? 0) : 0}
                     />
                   </li>
                 );
