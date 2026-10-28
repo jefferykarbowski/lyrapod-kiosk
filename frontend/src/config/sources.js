@@ -39,11 +39,21 @@ export const SOURCES = [
     status: 'live',
   },
   {
+    id: 'twitch',
+    label: 'Twitch',
+    legend: 'Live channels',
+    // Violet was held for "the next source". This is it.
+    color: 'var(--sig-violet)',
+    colorHex: '#a77bff',
+    mark: 'block',
+    status: 'live',
+  },
+  {
     id: 'apple',
     label: 'Apple Music',
     legend: 'Not connected',
-    color: 'var(--sig-violet)',
-    colorHex: '#a77bff',
+    color: 'var(--chalk-3)',
+    colorHex: '#7c7c76',
     mark: 'stipple',
     status: 'planned',
   },

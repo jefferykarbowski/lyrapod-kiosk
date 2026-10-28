@@ -31,9 +31,20 @@ console.log(`baseline: ${lyra.length} stations from ${path.basename(source)}\n`)
 const db = new DatabaseSync(DB, { readOnly: true });
 const st = db.prepare(`
   SELECT s.*, (SELECT group_concat(g.name, ', ') FROM station_genres sg
-    JOIN genres g ON g.id = sg.genre_id WHERE sg.station_id = s.id ORDER BY g.sort) AS genres
+    JOIN genres g ON g.id = sg.genre_id WHERE sg.station_id = s.id ORDER BY g.sort) AS genres,
+    (SELECT group_concat(g.slug, ',') FROM station_genres sg
+    JOIN genres g ON g.id = sg.genre_id WHERE sg.station_id = s.id ORDER BY g.sort) AS genre_slugs
   FROM stations s WHERE s.approved = 1 AND s.stream_healthy = 1
   ORDER BY s.name COLLATE NOCASE`).all();
+
+// The taxonomy itself, so the genre rail can name and order a slug without
+// the catalogue repeating the name on all 30-odd stations that carry it.
+// Colour is deliberately dropped: in this interface colour belongs to a
+// source, and 47 genre hues would spend it on ornament. See DESIGN.md.
+const taxonomy = db.prepare(`
+  SELECT g.slug, g.name, g.sort FROM genres g
+  WHERE EXISTS (SELECT 1 FROM station_genres sg WHERE sg.genre_id = g.id)
+  ORDER BY g.sort`).all();
 db.close();
 
 // A bare HTML5 Audio element cannot play an HLS playlist without hls.js, so an
@@ -103,6 +114,75 @@ const label = (s) => {
   return g || place || 'Community Radio';
 };
 
+// ---------- place (its own line on the card) ----------
+// Separate from the label above because the card now reads place and genre as
+// two different claims. Nothing is inferred: a station whose city soundtap
+// never established gets its country, and one with neither gets nothing.
+const place = (s) => {
+  const city = cleanCity(s.city, s.callsign);
+  if (city && s.region && s.country_code === 'US') return `${city}, ${s.region}`;
+  const parts = [city, s.region, s.country].filter(
+    (part, i, all) => part && part !== 'Unknown' && all.indexOf(part) === i,
+  );
+  return parts.length ? parts.join(', ') : null;
+};
+
+const genreList = (s) => {
+  if (!s.genre_slugs) return null;
+  const slugs = [...new Set(s.genre_slugs.split(',').filter(Boolean))];
+  return slugs.length ? slugs : null;
+};
+
+/**
+ * A tagline is worth a line of its own only when someone wrote it.
+ *
+ * `label()` above composes one from genres and place, and earlier runs of this
+ * script wrote those composites into the catalogue's `genre` field. Now that
+ * the card gives place and genre their own rows, a composite tagline just says
+ * the same two things a third time — 106 of the 255 restated the place and 59
+ * restated the genre chips. So a tagline survives only when it differs from
+ * what this script would have generated, which is exactly the hand-written set
+ * ('The Wave of the West', 'Freeform • Jersey City', 'Always on LA').
+ */
+const handWritten = (tagline, s) => (tagline && tagline !== label(s) ? tagline : null);
+
+// The short forms LyraPod's own taglines used for a country the place row now
+// names in full. Only the two that actually occur in the catalogue.
+const COUNTRY_SHORTHAND = { usa: 'united states', uk: 'united kingdom' };
+
+const flat = (value) => (value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+/**
+ * A tagline that only repeats the place row is not a second line, it is the
+ * same line twice.
+ *
+ * Two ways that happens. `bestPlace` may have promoted the tagline itself into
+ * the place row, in which case they are the same string. Or the tagline is a
+ * bare country — 'USA', 'UK', 'Ireland' — that the place row already carries,
+ * sometimes spelled differently.
+ */
+const saysNothingNew = (tagline, resolvedPlace, country) => {
+  if (!tagline || !resolvedPlace) return false;
+  if (flat(tagline) === flat(resolvedPlace)) return true;
+  const spelled = COUNTRY_SHORTHAND[tagline.trim().toLowerCase()] ?? tagline;
+  return Boolean(country) && flat(spelled) === flat(country);
+};
+
+/**
+ * Two real records of the same fact, so take the fuller one rather than the
+ * newer one. soundtap's city column is 'Unknown' for most of its catalogue,
+ * which leaves `place` as a bare country — while LyraPod's own tagline often
+ * names the town ('Thessaloniki, Greece' against soundtap's 'Greece'). Where
+ * the tagline names the same country and says more, it is the better place.
+ * Nothing is inferred here: both strings were already in the data.
+ */
+const bestPlace = (fromSoundtap, tagline) => {
+  if (!fromSoundtap) return tagline && !tagline.includes('•') ? tagline : fromSoundtap;
+  if (!tagline || tagline === fromSoundtap) return fromSoundtap;
+  const sameCountry = tagline.toLowerCase().includes(fromSoundtap.toLowerCase());
+  return sameCountry && tagline.length > fromSoundtap.length ? tagline : fromSoundtap;
+};
+
 // ---------- logos ----------
 const lyraLogoDir = `${LYRA}/frontend/public/logos`;
 const stLogoDir = `${ST}/public/logos`;
@@ -149,15 +229,29 @@ for (const l of lyra) {
   usedIds.add(l.id);
   if (s) {
     upgraded++;
+    const country = s.country && s.country !== 'Unknown' ? s.country : null;
+    const resolvedPlace = bestPlace(place(s), l.genre);
+    const tagline = handWritten(l.genre, s);
     out.push({
       id: l.id,
       name: l.name,
+      callsign: s.callsign || null,
       streamUrl: s.stream_url,          // https, freshly probed
       logo: l.logo || bringLogo(s),     // keep the artwork already shipping
-      genre: l.genre,                   // keep the hand-written tagline
+      // Only a tagline a person wrote, and only where it says something the
+      // place row does not.
+      genre: saysNothingNew(tagline, resolvedPlace, country) ? null : tagline,
+      place: resolvedPlace,
+      country,
+      frequency: s.frequency || null,
+      website: s.website || null,
+      bitrate: s.bitrate || null,
+      genres: genreList(s),
     });
   } else {
     keptLyraOnly++;
+    // No soundtap row, so no place, frequency or genre for this one. The
+    // hand-written tagline is all there is, and the card says only that.
     out.push({ id: l.id, name: l.name, streamUrl: l.streamUrl, logo: l.logo, genre: l.genre });
   }
 }
@@ -170,9 +264,17 @@ for (const s of carried) {
   out.push({
     id: idFor(s.slug),
     name: s.callsign || s.name,
+    callsign: s.callsign || null,
     streamUrl: s.stream_url,
     logo: bringLogo(s),
-    genre: label(s),
+    // No tagline: everything label() would compose here now has its own row.
+    genre: null,
+    place: place(s),
+    country: s.country && s.country !== 'Unknown' ? s.country : null,
+    frequency: s.frequency || null,
+    website: s.website || null,
+    bitrate: s.bitrate || null,
+    genres: genreList(s),
   });
 }
 
@@ -209,14 +311,19 @@ out.push(...kept);
 out.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
 
 // ---------- emit ----------
+// A field is written only when there is something real to put in it, so a
+// missing key in the catalogue means "not known" rather than "empty string".
+const FIELDS = [
+  'id', 'name', 'callsign', 'streamUrl', 'logo', 'genre',
+  'place', 'country', 'frequency', 'website', 'bitrate', 'genres',
+];
+
 const body = out.map(s => {
-  const lines = [
-    `    id: ${JSON.stringify(s.id)},`,
-    `    name: ${JSON.stringify(s.name)},`,
-    `    streamUrl: ${JSON.stringify(s.streamUrl)},`,
-  ];
-  if (s.logo) lines.push(`    logo: ${JSON.stringify(s.logo)},`);
-  lines.push(`    genre: ${JSON.stringify(s.genre)}`);
+  const lines = FIELDS
+    .filter(key => s[key] !== null && s[key] !== undefined)
+    .map(key => `    ${key}: ${JSON.stringify(s[key])},`);
+  // Trailing comma off the last line.
+  lines[lines.length - 1] = lines[lines.length - 1].replace(/,$/, '');
   return `  {\n${lines.join('\n')}\n  }`;
 }).join(',\n');
 
@@ -241,6 +348,11 @@ const header = `// Station catalogue — ${out.length} stations.
 // Streams rot. Re-probe with scripts/verify-all-streams.py, and treat its TLS
 // failures sceptically: Python's defaults are refused by some Icecast hosts
 // that browsers negotiate with fine.
+//
+// A field is absent rather than empty when it is not known. ${out.filter(s => s.place).length} of ${out.length}
+// carry a place and ${out.filter(s => s.genres).length} carry a genre, because soundtap records only what
+// a station or a public directory actually published. The card reads what is
+// there and says nothing where there is nothing.
 
 export const DEFAULT_STATIONS = [
 ${body}
@@ -250,6 +362,35 @@ export default DEFAULT_STATIONS;
 `;
 
 fs.writeFileSync(`${LYRA}/frontend/src/config/stations.js`, header);
+
+// ---------- genre taxonomy ----------
+// Only the genres some carried station actually has. A genre nothing carries
+// is omitted rather than listed as a zero.
+const present = new Set(out.flatMap(s => s.genres ?? []));
+const genresOut = taxonomy.filter(g => present.has(g.slug));
+fs.writeFileSync(
+  `${LYRA}/frontend/src/config/genres.js`,
+  `// Genre taxonomy — ${genresOut.length} genres.
+//
+// Generated by scripts/merge-soundtap.mjs; edit that, not this.
+//
+// soundtap's taxonomy, reduced to the genres stations in this catalogue
+// actually carry. Two signals feed it upstream: the tags a public directory
+// holds for a station, and the genre named by a show's own published title.
+// Most stations name no genre at all, and those stay unclassified rather than
+// being guessed into Variety — so these counts are counts, and the rail is
+// shorter than the taxonomy.
+//
+// No colour: in this interface colour identifies a source, and spending it on
+// genre would make it ornament. See DESIGN.md.
+
+export const GENRES = [
+${genresOut.map(g => `  { slug: ${JSON.stringify(g.slug)}, name: ${JSON.stringify(g.name)} },`).join('\n')}
+];
+
+export default GENRES;
+`,
+);
 
 // Provenance record, so the next person can see what this pass decided and why
 // without re-deriving it. Mirrors how the earlier station work is documented.
@@ -285,6 +426,9 @@ console.log(`  LyraPod-only kept : ${keptLyraOnly}`);
 console.log(`TOTAL               : ${out.length}`);
 console.log(`logos copied        : ${copied.length}`);
 console.log(`without logo        : ${out.filter(s => !s.logo).length}`);
+console.log(`with place          : ${out.filter(s => s.place).length}`);
+console.log(`with genre          : ${out.filter(s => s.genres).length}`);
+console.log(`genres in rail      : ${genresOut.length}`);
 console.log(`http streams left   : ${out.filter(s => s.streamUrl.startsWith('http:')).length}`);
 
 console.log(`\nHLS excluded from soundtap (${hls.length}):`);

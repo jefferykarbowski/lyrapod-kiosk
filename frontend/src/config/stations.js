@@ -19,135 +19,208 @@
 // Streams rot. Re-probe with scripts/verify-all-streams.py, and treat its TLS
 // failures sceptically: Python's defaults are refused by some Icecast hosts
 // that browsers negotiate with fine.
+//
+// A field is absent rather than empty when it is not known. 225 of 255
+// carry a place and 93 carry a genre, because soundtap records only what
+// a station or a public directory actually published. The card reads what is
+// there and says nothing where there is nothing.
 
 export const DEFAULT_STATIONS = [
   {
     id: "1431am",
     name: "1431AM",
+    callsign: "1431AM",
     streamUrl: "https://www.1431am.org:8001/1431high",
     logo: "/logos/1431am.png",
-    genre: "Thessaloniki, Greece"
+    place: "Thessaloniki, Greece",
+    country: "Greece",
+    website: "https://www.1431am.org/",
+    genres: ["electronic","hip-hop","news","punk","talk"]
   },
   {
     id: "4zzz",
     name: "4ZZZ",
+    callsign: "4ZZZ",
     streamUrl: "https://iheart.4zzz.org.au/4zzz",
     logo: "/logos/4zzz.svg",
-    genre: "Brisbane • Australia"
+    place: "Brisbane • Australia",
+    country: "Australia",
+    website: "https://4zzz.org.au/"
   },
   {
     id: "bagelradio",
     name: "Bagel Radio",
+    callsign: "Bagel Radio",
     streamUrl: "https://ais-sa3.cdnstream1.com/2606_128.aac",
     logo: "/logos/bagelradio.jpg",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://www.bagelradio.com/",
+    genres: ["rock"]
   },
   {
     id: "bailriggfm",
     name: "Bailrigg FM",
+    callsign: "Bailrigg FM",
     streamUrl: "https://stream.bailriggfm.co.uk/listen/bfm/128.mp3",
     logo: "/logos/bailriggfm.png",
-    genre: "UK"
+    place: "United Kingdom",
+    country: "United Kingdom",
+    website: "https://bailriggfm.co.uk/"
   },
   {
     id: "bfffm",
     name: "BFF.fm",
+    callsign: "BFF.fm",
     streamUrl: "https://stream.bff.fm/1/BFF.fm.mp3",
     logo: "/logos/bfffm.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://bff.fm/"
   },
   {
     id: "boomradio",
     name: "Boom Radio",
+    callsign: "Boom Radio",
     streamUrl: "https://listen-boomradio.sharp-stream.com/65_boom_radio_live_192",
-    genre: "Oldies • United Kingdom"
+    place: "United Kingdom",
+    country: "United Kingdom",
+    website: "https://www.boomradiouk.com/",
+    bitrate: 256,
+    genres: ["oldies"]
   },
   {
     id: "bsr",
     name: "BSR",
+    callsign: "BSR",
     streamUrl: "https://listen.bsrlive.com/bsrmp3",
-    genre: "Providence"
+    place: "Providence, RI",
+    country: "United States",
+    website: "http://www.bsrlive.com/",
+    bitrate: 128
   },
   {
     id: "bushradio",
     name: "Bushradio",
+    callsign: "Bushradio",
     streamUrl: "https://zas4.ndx.co.za:9100/stream",
     logo: "/logos/bushradio.png",
-    genre: "South Africa"
+    place: "South Africa",
+    country: "South Africa",
+    website: "https://bushradio.wordpress.com/"
   },
   {
     id: "bytefm",
     name: "ByteFM",
+    callsign: "ByteFM",
     streamUrl: "https://uplink.byte.fm/bytefm-main/mp3-128/",
-    genre: "Germany"
+    place: "Germany",
+    country: "Germany"
   },
   {
     id: "cambridge105",
     name: "Cambridge 105",
+    callsign: "Cambridge 105",
     streamUrl: "https://stream.cambridge105.co.uk:8443/105-radioplayer-high",
-    genre: "Country, Folk • Cambridge"
+    place: "Cambridge, United Kingdom",
+    country: "United Kingdom",
+    website: "https://cambridge105.co.uk/",
+    genres: ["country","folk","indie","rock"]
   },
   {
     id: "cfru",
     name: "CFRU",
+    callsign: "CFRU",
     streamUrl: "https://listen.cfru.ca/",
     logo: "/logos/cfru.png",
-    genre: "Canada"
+    place: "Canada",
+    country: "Canada",
+    website: "https://cfru.ca/"
   },
   {
     id: "chirp2",
     name: "CHIRP",
+    callsign: "CHIRP",
     streamUrl: "https://peridot.streamguys1.com:5185/live",
     logo: "/logos/chirp2.png",
-    genre: "Independent Radio • USA"
+    genre: "Independent Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://chirpradio.org/",
+    genres: ["indie","rock"]
   },
   {
     id: "citr",
     name: "CiTR",
+    callsign: "CiTR",
     streamUrl: "https://live.citr.ca/live.aac",
     logo: "/logos/citr.png",
-    genre: "U of British Columbia"
+    genre: "U of British Columbia",
+    place: "Canada",
+    country: "Canada",
+    website: "https://www.citr.ca/",
+    genres: ["variety"]
   },
   {
     id: "ciut",
     name: "CIUT",
+    callsign: "CIUT",
     streamUrl: "https://ice23.securenetsystems.net/CIUT",
-    genre: "Toronto"
+    place: "Toronto, ON, Canada",
+    country: "Canada",
+    website: "http://www.ciut.fm/"
   },
   {
     id: "cixx",
     name: "CIXX",
+    callsign: "CIXX",
     streamUrl: "https://ice23.securenetsystems.net/CIXXFM",
     logo: "/logos/cixx.png",
-    genre: "Campus Radio • Canada"
+    place: "Campus Radio • Canada",
+    country: "Canada",
+    website: "https://www.1069thex.com/"
   },
   {
     id: "met-radio-1280-am",
     name: "CJRU",
+    callsign: "CJRU",
     streamUrl: "https://ryerson.out.airtime.pro:8000/ryerson_a",
     logo: "/logos/met-radio-1280-am.jpg",
-    genre: "Toronto"
+    place: "Toronto, Canada",
+    country: "Canada",
+    website: "http://metradio.ca",
+    bitrate: 96
   },
   {
     id: "cjsf",
     name: "CJSF",
+    callsign: "CJSF",
     streamUrl: "https://www.cjsf.ca/streaming",
     logo: "/logos/cjsf.png",
-    genre: "College Radio • Canada"
+    place: "College Radio • Canada",
+    country: "Canada",
+    website: "https://www.cjsf.ca/",
+    genres: ["arts","indie","indigenous","news","talk","world"]
   },
   {
     id: "cjsw",
     name: "CJSW",
+    callsign: "CJSW",
     streamUrl: "https://stream.cjsw.com/cjsw.mp3",
     logo: "/logos/cjsw.png",
-    genre: "Campus Radio • Canada"
+    place: "Campus Radio • Canada",
+    country: "Canada",
+    website: "https://cjsw.com/"
   },
   {
     id: "ckcu",
     name: "CKCU",
+    callsign: "CKCU",
     streamUrl: "https://stream2.statsradio.com:8124/stream",
     logo: "/logos/ckcu.jpg",
-    genre: "College Radio • Canada"
+    place: "College Radio • Canada",
+    country: "Canada",
+    website: "https://www.ckcufm.com/"
   },
   {
     id: "ckms",
@@ -159,29 +232,44 @@ export const DEFAULT_STATIONS = [
   {
     id: "ckut",
     name: "CKUT",
+    callsign: "CKUT",
     streamUrl: "https://delray.ckut.ca:8001/ckut-live-128",
     logo: "/logos/ckut.png",
-    genre: "Montreal Community Radio"
+    genre: "Montreal Community Radio",
+    place: "Canada",
+    country: "Canada",
+    website: "https://ckut.ca/"
   },
   {
     id: "coyoteradio",
     name: "Coyote Radio",
+    callsign: "Coyote Radio",
     streamUrl: "https://crbroadcast.csusb.edu/cr_live",
     logo: "/logos/coyoteradio.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://radioplayer.csusb.edu/coyote/index.html"
   },
   {
     id: "dublab",
     name: "dublab",
+    callsign: "dublab",
     streamUrl: "https://dublab.out.airtime.pro:8000/dublab_a",
-    genre: "Live, Variety • United States"
+    place: "United States",
+    country: "United States",
+    website: "https://www.dublab.com/",
+    genres: ["live","variety"]
   },
   {
     id: "dublindigitalradio",
     name: "Dublin Digital Radio",
+    callsign: "Dublin Digital Radio",
     streamUrl: "https://dublin-digital-radio.radiocult.fm/stream",
     logo: "/logos/dublindigitalradio.jpg",
-    genre: "Ireland"
+    place: "Ireland",
+    country: "Ireland",
+    website: "https://listen.dublindigitalradio.com/home",
+    genres: ["rock","talk"]
   },
   {
     id: "freeform-portland",
@@ -193,21 +281,33 @@ export const DEFAULT_STATIONS = [
   {
     id: "frquencebanane",
     name: "Fréquence Banane",
+    callsign: "Fréquence Banane",
     streamUrl: "https://player.frequencebanane.ch/fb_192",
-    genre: "Lausanne"
+    place: "Lausanne, Switzerland",
+    country: "Switzerland",
+    website: "http://www.frequencebanane.ch/",
+    bitrate: 320
   },
   {
     id: "futureradio",
     name: "Future Radio",
+    callsign: "Future Radio",
     streamUrl: "https://radio.canstream.co.uk:8007/live.mp3",
-    genre: "Rock • United Kingdom"
+    place: "United Kingdom",
+    country: "United Kingdom",
+    website: "https://www.futureradio.co.uk/",
+    genres: ["rock"]
   },
   {
     id: "humboldt-hot-air",
     name: "Humboldt Hot Air",
+    callsign: "Humboldt Hot Air",
     streamUrl: "https://hha.streamguys1.com/live",
     logo: "/logos/humboldt-hot-air.png",
-    genre: "Arcata"
+    place: "Arcata, Northern California",
+    country: "United States",
+    website: "https://www.humboldthotair.org/",
+    bitrate: 128
   },
   {
     id: "infowars",
@@ -219,175 +319,290 @@ export const DEFAULT_STATIONS = [
   {
     id: "kafm-88-1",
     name: "KAFM",
+    callsign: "KAFM",
     streamUrl: "https://streams.radiomast.io/10822f41-b0b3-4430-809f-9c22cf5c990f",
     logo: "/logos/kafm-88-1.jpg",
-    genre: "United States"
+    place: "Colorado, United States",
+    country: "United States",
+    website: "http://www.kafmcommunityradio.org",
+    bitrate: 128
   },
   {
     id: "kala-hd2",
     name: "KALA-HD2",
+    callsign: "KALA-HD2",
     streamUrl: "https://kala.streamguys1.com/live1",
     logo: "/logos/kala-hd2.jpg",
-    genre: "Univ. Davenport"
+    place: "Univ. Davenport, United States",
+    country: "United States",
+    bitrate: 96
   },
   {
     id: "kalw",
     name: "KALW",
+    callsign: "KALW",
     streamUrl: "https://kalw-live.streamguys1.com/kalw.aac",
-    genre: "San Francisco"
+    place: "San Francisco, CA",
+    country: "United States",
+    website: "http://www.kalw.org/",
+    bitrate: 128
   },
   {
     id: "kalx",
     name: "KALX",
+    callsign: "KALX",
     streamUrl: "https://stream.kalx.berkeley.edu:8443/kalx-128.mp3",
     logo: "/logos/kalx.png",
-    genre: "UC Berkeley"
+    genre: "UC Berkeley",
+    place: "United States",
+    country: "United States",
+    website: "https://www.kalx.berkeley.edu/",
+    bitrate: 128,
+    genres: ["variety"]
   },
   {
     id: "kanm-student-radio",
     name: "KANM",
+    callsign: "KANM",
     streamUrl: "https://icecast.kanm.org/listen",
     logo: "/logos/kanm-student-radio.jpg",
-    genre: "Indie, Rock • United States"
+    place: "Texas, United States",
+    country: "United States",
+    website: "https://kanm.tamu.edu/",
+    bitrate: 192,
+    genres: ["indie","rock","variety"]
   },
   {
     id: "kaos-olympia",
     name: "KAOS",
+    callsign: "KAOS",
     streamUrl: "https://s3.myradiostream.com:59506/stream",
     logo: "/logos/kaos-olympia.jpg",
-    genre: "Olympia"
+    place: "Olympia, Washington",
+    country: "United States",
+    frequency: "89.3 FM",
+    website: "http://www.kaosradio.org",
+    bitrate: 128
   },
   {
     id: "jazz88-fm-88-5-kbem",
     name: "KBEM",
+    callsign: "KBEM",
     streamUrl: "https://kbem-live.streamguys1.com/kbem_aac",
     logo: "/logos/jazz88-fm-88-5-kbem.png",
-    genre: "Jazz, News • United States"
+    place: "Minnesota, United States",
+    country: "United States",
+    website: "http://jazz88.fm",
+    bitrate: 96,
+    genres: ["jazz","news"]
   },
   {
     id: "kboo-portland",
     name: "KBOO",
+    callsign: "KBOO",
     streamUrl: "https://live.kboo.fm:8443/high",
     logo: "/logos/kboo-portland.png",
-    genre: "Variety • Portland"
+    place: "Portland, Oregon",
+    country: "United States",
+    frequency: "90.7 FM",
+    website: "http://kboo.fm",
+    bitrate: 192,
+    genres: ["variety"]
   },
   {
     id: "kbvr-fm-88-7",
     name: "KBVR",
+    callsign: "KBVR",
     streamUrl: "https://node-10.zeno.fm/9ympbz9nfa0uv",
     logo: "/logos/kbvr-fm-88-7.png",
-    genre: "United States"
+    place: "Oregon, United States",
+    country: "United States",
+    website: "https://kbvrfm.orangemedianetwork.com/"
   },
   {
     id: "kcaw-sitka",
     name: "KCAW",
+    callsign: "KCAW",
     streamUrl: "https://tektite.streamguys1.com:5195/live",
     logo: "/logos/kcaw-sitka.jpg",
-    genre: "News • Sitka"
+    place: "Sitka, Alaska",
+    country: "United States",
+    frequency: "104.7 FM",
+    website: "http://www.kcaw.org",
+    bitrate: 128,
+    genres: ["news"]
   },
   {
     id: "kcbp",
     name: "KCBP",
+    callsign: "KCBP",
     streamUrl: "https://kcbp.broadcasttool.stream/play",
     logo: "/logos/kcbp.png",
-    genre: "United States"
+    place: "California, United States",
+    country: "United States",
+    website: "https://kcbpradio.org/",
+    bitrate: 128
   },
   {
     id: "88-3-kcck-cedar-rapids",
     name: "KCCK",
+    callsign: "KCCK",
     streamUrl: "https://stream.kcck.org/jazz883kcck",
     logo: "/logos/88-3-kcck-cedar-rapids.jpg",
-    genre: "Jazz, News • United States"
+    place: "Iowa, United States",
+    country: "United States",
+    website: "http://www.kcck.org",
+    bitrate: 160,
+    genres: ["jazz","news"]
   },
   {
     id: "prairie-public",
     name: "KCND",
+    callsign: "KCND",
     streamUrl: "https://18153.live.streamtheworld.com/KCNDFM_SC",
     logo: "/logos/prairie-public.png",
-    genre: "Classical, News • United States"
+    place: "North Dakota, United States",
+    country: "United States",
+    website: "http://prairiepublic.org",
+    bitrate: 96,
+    genres: ["classical","news"]
   },
   {
     id: "kcpr",
     name: "KCPR",
+    callsign: "KCPR",
     streamUrl: "https://ice9.securenetsystems.net/KCPR1",
     logo: "/logos/kcpr.png",
-    genre: "Cal Poly San Luis Obispo"
+    genre: "Cal Poly San Luis Obispo",
+    place: "United States",
+    country: "United States",
+    website: "http://kcpr.org/"
   },
   {
     id: "kcrw",
     name: "KCRW",
+    callsign: "KCRW",
     streamUrl: "https://streams.kcrw.com/kcrw_mp3?aw_0_1st.playerid=radio-browser.info",
     logo: "/logos/kcrw.png",
-    genre: "Always on LA"
+    genre: "Always on LA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.kcrw.com/",
+    genres: ["live","news"]
   },
   {
     id: "kcsb",
     name: "KCSB",
+    callsign: "KCSB",
     streamUrl: "https://kcsb.streamguys1.com/live",
     logo: "/logos/kcsb.png",
-    genre: "Santa Barbara"
+    place: "Santa Barbara, CA",
+    country: "United States",
+    website: "http://www.kcsb.org/",
+    bitrate: 128
   },
   {
     id: "kcsu",
     name: "KCSU",
+    callsign: "KCSU",
     streamUrl: "https://listen.kcsufm.com/stream?nocache=1770828530774",
     logo: "/logos/kcsu.png",
-    genre: "University Radio • USA"
+    genre: "University Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://kcsufm.com/"
   },
   {
     id: "kdrt",
     name: "KDRT",
+    callsign: "KDRT",
     streamUrl: "https://kdrt.org:8001/kdrt",
     logo: "/logos/kdrt.png",
-    genre: "Davis"
+    place: "Davis, California",
+    country: "United States",
+    website: "http://kdrt.org",
+    bitrate: 192
   },
   {
     id: "kdvs",
     name: "KDVS",
+    callsign: "KDVS",
     streamUrl: "https://listen.kdvs.org/stream",
     logo: "/logos/kdvs.png",
-    genre: "Freeform • Davis, CA"
+    place: "Freeform • Davis, CA",
+    country: "United States",
+    website: "https://kdvs.org/",
+    bitrate: 128
   },
   {
     id: "kexp",
     name: "KEXP",
+    callsign: "KEXP",
     streamUrl: "https://kexp.streamguys1.com/kexp160.aac?listenerid=f4bcb5c771d830fbdd4195088a946ea6&awparams=companionAds%3Atrue",
     logo: "/logos/kexp.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://www.kexp.org/",
+    bitrate: 162
   },
   {
     id: "kfai",
     name: "KFAI-FM",
+    callsign: "KFAI",
     streamUrl: "https://kfai.broadcasttool.stream/kfai-1",
     logo: "/logos/kfai.png",
-    genre: "Minneapolis + St. Paul"
+    genre: "Minneapolis + St. Paul",
+    place: "Minnesota, United States",
+    country: "United States",
+    website: "http://www.kfai.org",
+    bitrate: 192,
+    genres: ["syndicated","talk"]
   },
   {
     id: "kfcf-fresno-ca",
     name: "KFCF",
+    callsign: "KFCF",
     streamUrl: "https://stream.kfcf.org:8443/128",
     logo: "/logos/kfcf-fresno-ca.png",
-    genre: "Fresno, CA"
+    place: "Fresno, CA, United States",
+    country: "United States",
+    frequency: "88.1 FM",
+    website: "http://www.kfcf.org"
   },
   {
     id: "kfjc",
     name: "KFJC",
+    callsign: "KFJC",
     streamUrl: "https://netcast.kfjc.org/kfjc-128k-mp3",
     logo: "/logos/kfjc.gif",
-    genre: "The Wave of the West"
+    genre: "The Wave of the West",
+    place: "United States",
+    country: "United States",
+    website: "https://kfjc.org/",
+    bitrate: 128
   },
   {
     id: "kfok",
     name: "KFOK",
+    callsign: "KFOK",
     streamUrl: "https://kfok.streamguys1.com/live-mp3",
-    genre: "United States"
+    place: "California, United States",
+    country: "United States",
+    frequency: "95.1 FM",
+    website: "http://www.kfok.org",
+    bitrate: 110
   },
   {
     id: "kgnu",
     name: "KGNU",
+    callsign: "KGNU",
     streamUrl: "https://kgnu.streamguys1.com/kgnu",
     logo: "/logos/kgnu.png",
-    genre: "Community Radio • USA"
+    genre: "Community Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.kgnu.org/",
+    genres: ["news","variety"]
   },
   {
     id: "khdx",
@@ -413,30 +628,48 @@ export const DEFAULT_STATIONS = [
   {
     id: "kiyu",
     name: "KIYU",
+    callsign: "KIYU",
     streamUrl: "https://kiyu.streamguys1.com/live",
     logo: "/logos/kiyu.png",
-    genre: "News • Galena"
+    place: "Galena, Alaska",
+    country: "United States",
+    website: "http://www.kiyu.com",
+    bitrate: 56,
+    genres: ["news"]
   },
   {
     id: "kkcr-kaua-i-community-radio",
     name: "KKCR",
+    callsign: "KKCR",
     streamUrl: "https://s8.phx.icastcenter.com:9000/stream#.mp3",
     logo: "/logos/kkcr-kaua-i-community-radio.jpg",
-    genre: "United States"
+    place: "Hawaii, United States",
+    country: "United States",
+    website: "http://kkcr.org"
   },
   {
     id: "kkup-cupertino",
     name: "KKUP",
+    callsign: "KKUP",
     streamUrl: "https://kkup.streamguys1.com/live",
     logo: "/logos/kkup-cupertino.png",
-    genre: "Variety • Cupertino"
+    place: "Cupertino, California",
+    country: "United States",
+    frequency: "91.5 FM",
+    website: "https://kkupfm.org",
+    bitrate: 64,
+    genres: ["variety"]
   },
   {
     id: "kmrd2",
     name: "KMRD",
+    callsign: "KMRD",
     streamUrl: "https://kmrd.broadcasttool.stream/listen",
     logo: "/logos/kmrd2.png",
-    genre: "Community Radio • USA"
+    genre: "Community Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://kmrd.fm/"
   },
   {
     id: "kmrd",
@@ -448,9 +681,12 @@ export const DEFAULT_STATIONS = [
   {
     id: "kmsu",
     name: "KMSU",
+    callsign: "KMSU",
     streamUrl: "https://stream.aiir.com/ivdkskjmcnhuv",
     logo: "/logos/kmsu.jpg",
-    genre: "Mankato"
+    place: "Mankato, Minnesota",
+    country: "United States",
+    website: "http://www.kmsu.org"
   },
   {
     id: "kmud",
@@ -462,92 +698,153 @@ export const DEFAULT_STATIONS = [
   {
     id: "kmun-astoria",
     name: "KMUN",
+    callsign: "KMUN",
     streamUrl: "https://ice5.securenetsystems.net/KMUN",
     logo: "/logos/kmun-astoria.png",
-    genre: "News • Astoria"
+    place: "Astoria, Oregon",
+    country: "United States",
+    frequency: "91.9 FM",
+    website: "http://www.kmun.org",
+    bitrate: 192,
+    genres: ["news"]
   },
   {
     id: "knhc-seattle-dance-89-5",
     name: "KNHC",
+    callsign: "KNHC",
     streamUrl: "https://knhc-ice.streamguys1.com/live",
     logo: "/logos/knhc-seattle-dance-89-5.png",
-    genre: "Electronic • Seattle"
+    place: "Seattle, Washington",
+    country: "United States",
+    website: "https://www.dance895.org/",
+    bitrate: 128,
+    genres: ["electronic"]
   },
   {
     id: "knon",
     name: "KNON",
+    callsign: "KNON",
     streamUrl: "https://knon.streamguys1.com/live",
     logo: "/logos/knon.jpg",
-    genre: "Americana, Blues • United States"
+    place: "Texas, United States",
+    country: "United States",
+    website: "http://www.knon.org",
+    bitrate: 80,
+    genres: ["americana","blues","jazz","latin"]
   },
   {
     id: "knsj",
     name: "KNSJ",
+    callsign: "KNSJ",
     streamUrl: "https://music.knsj.org/wp-content/uploads/2026/04/KNSJ-No-Kings-Recap-1.mp3",
     logo: "/logos/knsj.jpg",
-    genre: "United States"
+    place: "California, United States",
+    country: "United States",
+    website: "https://music.knsj.org"
   },
   {
     id: "kntu",
     name: "KNTU",
+    callsign: "KNTU",
     streamUrl: "https://ice41.securenetsystems.net/KNTU",
     logo: "/logos/kntu.png",
-    genre: "Alternative • USA"
+    genre: "Alternative • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://881indie.com/",
+    genres: ["indie","rock"]
   },
   {
     id: "knvc",
     name: "KNVC",
+    callsign: "KNVC",
     streamUrl: "https://www.streamcontrol.net:8444/s/16400",
     logo: "/logos/knvc.png",
-    genre: "Carson City"
+    place: "Carson City, United States",
+    country: "United States",
+    frequency: "95.1 FM",
+    website: "http://knvc.org",
+    bitrate: 128
   },
   {
     id: "kopn",
     name: "KOPN",
+    callsign: "KOPN",
     streamUrl: "https://kopn.broadcasttool.stream/play",
     logo: "/logos/kopn.jpg",
-    genre: "United States"
+    place: "Missouri, United States",
+    country: "United States",
+    frequency: "89.5 FM",
+    website: "http://www.kopn.org",
+    bitrate: 128
   },
   {
     id: "koto",
     name: "KOTO",
+    callsign: "KOTO",
     streamUrl: "https://playerservices.streamtheworld.com/api/livestream-redirect/KOTOFM.mp3",
     logo: "/logos/koto.png",
-    genre: "A Rare Medium, Well-Done"
+    genre: "A Rare Medium, Well-Done",
+    place: "United States",
+    country: "United States",
+    website: "https://www.koto.org/"
   },
   {
     id: "kpcc",
     name: "KPCC",
+    callsign: "KPCC",
     streamUrl: "https://laist.streamguys1.com/kpcc-mp3?aw_0_1st.playerId=laist",
-    genre: "Los Angeles"
+    place: "Los Angeles, CA",
+    country: "United States",
+    website: "http://www.kpcc.org/",
+    bitrate: 192
   },
   {
     id: "kpfa",
     name: "KPFA",
+    callsign: "KPFA",
     streamUrl: "https://streams.kpfa.org:8443/kpfa",
     logo: "/logos/kpfa.png",
-    genre: "Vigilant as Always"
+    genre: "Vigilant as Always",
+    place: "California, United States",
+    country: "United States",
+    website: "http://www.kpfa.org",
+    bitrate: 120
   },
   {
     id: "kpov",
     name: "KPOV",
+    callsign: "KPOV",
     streamUrl: "https://kpov-ice.streamguys1.com/live",
     logo: "/logos/kpov.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://kpov.org/"
   },
   {
     id: "kptz-91-9-port-townsend",
     name: "KPTZ",
+    callsign: "KPTZ",
     streamUrl: "https://kptz.streamguys1.com/live-aac",
     logo: "/logos/kptz-91-9-port-townsend.jpg",
-    genre: "Variety • Port Townsend"
+    place: "Port Townsend, Washington",
+    country: "United States",
+    website: "http://kptz.org",
+    bitrate: 128,
+    genres: ["variety"]
   },
   {
     id: "kqed",
     name: "KQED",
+    callsign: "KQED",
     streamUrl: "https://streams.kqed.org/kqedradio?onsite=true",
     logo: "/logos/kqed.png",
-    genre: "Cultural News • USA"
+    genre: "Cultural News • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.kqed.org/radio",
+    bitrate: 32,
+    genres: ["news","talk"]
   },
   {
     id: "krbx",
@@ -559,180 +856,290 @@ export const DEFAULT_STATIONS = [
   {
     id: "krcc",
     name: "KRCC",
+    callsign: "KRCC",
     streamUrl: "https://streams.krcc.org/krcc_mp3",
     logo: "/logos/krcc.ico",
-    genre: "Local News • USA"
+    genre: "Local News • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.cpr.org/krcc/#:~:text=KRCC%2091.5%20FM%20Southern%20Colorado's%20NPR%20Station",
+    genres: ["news","talk"]
   },
   {
     id: "krcl",
     name: "KRCL",
+    callsign: "KRCL",
     streamUrl: "https://stream.xmission.com/krcl-high",
     logo: "/logos/krcl.jpg",
-    genre: "Lake City"
+    place: "Lake City, Utah",
+    country: "United States",
+    website: "https://krcl.org/",
+    bitrate: 112
   },
   {
     id: "105-1-krfh",
     name: "KRFH",
+    callsign: "KRFH",
     streamUrl: "https://krfh.streamguys1.com",
     logo: "/logos/105-1-krfh.png",
-    genre: "United States"
+    place: "California, United States",
+    country: "United States",
+    website: "http://krfh.net",
+    bitrate: 100
   },
   {
     id: "krnu",
     name: "KRNU",
+    callsign: "KRNU",
     streamUrl: "https://s8.yesstreaming.net:17004/krnu",
     logo: "/logos/krnu.png",
-    genre: "Alternative • USA"
+    genre: "Alternative • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://journalism.unl.edu/krnu",
+    genres: ["rock"]
   },
   {
     id: "marfa-public-radio",
     name: "KRTS",
+    callsign: "KRTS",
     streamUrl: "https://marfapr-ice.streamguys1.com/krts",
     logo: "/logos/marfa-public-radio.jpg",
-    genre: "News, Talk • Marfa"
+    place: "Marfa, Texas",
+    country: "United States",
+    website: "https://marfapublicradio.org/",
+    bitrate: 192,
+    genres: ["news","talk"]
   },
   {
     id: "krux",
     name: "KRUX",
+    callsign: "KRUX",
     streamUrl: "https://kruxstream.nmsu.edu/KRUX",
-    genre: "Las Cruces"
+    place: "Las Cruces, NM",
+    country: "United States",
+    website: "http://kruxradio.com/"
   },
   {
     id: "krvs-public-media",
     name: "KRVS",
+    callsign: "KRVS",
     streamUrl: "https://playerservices.streamtheworld.com/api/livestream-redirect/KRVSFMAAC.aac",
     logo: "/logos/krvs-public-media.png",
-    genre: "Blues, Jazz • United States"
+    place: "LA - Louisiana, United States",
+    country: "United States",
+    website: "http://www.krvs.org",
+    genres: ["blues","jazz","rock"]
   },
   {
     id: "the-wave",
     name: "KRWV-LP",
+    callsign: "KRWV-LP",
     streamUrl: "https://bigrradio.cdnstream1.com/5208_128",
     logo: "/logos/the-wave.png",
-    genre: "Rock • United States"
+    place: "Washington, United States",
+    country: "United States",
+    website: "http://krwv.org",
+    bitrate: 128,
+    genres: ["rock"]
   },
   {
     id: "krza-88-7-alamosa-taos",
     name: "KRZA",
+    callsign: "KRZA",
     streamUrl: "https://crystalout.surfernetwork.com:8001/KRZA-FM_MP3",
     logo: "/logos/krza-88-7-alamosa-taos.jpg",
-    genre: "Alamosa"
+    place: "Alamosa, Colorado",
+    country: "United States",
+    website: "http://www.krza.org"
   },
   {
     id: "ksdp",
     name: "KSDP",
+    callsign: "KSDP",
     streamUrl: "https://stream.apradio.org/stream.aac",
     logo: "/logos/ksdp.png",
-    genre: "Community Radio • USA"
+    genre: "Community Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.apradio.org/",
+    genres: ["news"]
   },
   {
     id: "ksdt",
     name: "KSDT",
+    callsign: "KSDT",
     streamUrl: "https://s4.radio.co/s2c33c7adb/listen",
-    genre: "College Radio • USA"
+    genre: "College Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "http://ksdt.ucsd.edu/",
+    genres: ["variety"]
   },
   {
     id: "ksjd",
     name: "KSJD",
+    callsign: "KSJD",
     streamUrl: "https://war.streamguys1.com:8435/",
     logo: "/logos/ksjd.jpg",
-    genre: "Cortez"
+    place: "Cortez, CO",
+    country: "United States",
+    website: "http://www.ksjd.org/",
+    bitrate: 140
   },
   {
     id: "ksjs",
     name: "KSJS",
+    callsign: "KSJS",
     streamUrl: "https://streaming.ksjs.sjsu.edu/",
     logo: "/logos/ksjs.png",
-    genre: "Student Run 24/7 Ground Zero"
+    genre: "Student Run 24/7 Ground Zero",
+    place: "San Jose, CA",
+    country: "United States",
+    website: "http://ksjs.org/",
+    bitrate: 256
   },
   {
     id: "ksko",
     name: "KSKO",
+    callsign: "KSKO",
     streamUrl: "https://ksko.streamguys1.com/live",
     logo: "/logos/ksko.jpg",
-    genre: "News, Talk • United States"
+    place: "Alaska, United States",
+    country: "United States",
+    website: "http://www.kskopublicradio.com",
+    bitrate: 128,
+    genres: ["news","talk"]
   },
   {
     id: "kspc",
     name: "KSPC",
+    callsign: "KSPC",
     streamUrl: "https://kspc.radioca.st/stream?type=http&nocache=41177",
     logo: "/logos/kspc.png",
-    genre: "College Radio • Los Angeles"
+    genre: "College Radio • Los Angeles",
+    place: "United States",
+    country: "United States",
+    website: "https://kspc.org/"
   },
   {
     id: "k-squid",
     name: "KSQD",
+    callsign: "KSQD",
     streamUrl: "https://ksqd.info:8100/stream",
-    genre: "News • United States"
+    place: "California, United States",
+    country: "United States",
+    website: "https://ksqd.org",
+    genres: ["news"]
   },
   {
     id: "ksua",
     name: "KSUA",
+    callsign: "KSUA",
     streamUrl: "https://stream.radio.co/se776fab22/listen",
-    genre: "Fairbanks"
+    place: "Fairbanks, AK",
+    country: "United States",
+    website: "http://www.ksuaradio.com/"
   },
   {
     id: "ksut-four-corners-public-radio",
     name: "KSUT Four Corners Public Radio",
+    callsign: "KSUT Four Corners Public Radio",
     streamUrl: "https://ksut.streamguys1.com/ksut",
     logo: "/logos/ksut-four-corners-public-radio.png",
-    genre: "Classical, Indigenous • Radio Ignacio"
+    place: "Radio Ignacio, Colorado",
+    country: "United States",
+    website: "https://www.ksut.org/",
+    bitrate: 64,
+    genres: ["classical","indigenous","news"]
   },
   {
     id: "ktal-lp",
     name: "KTAL",
+    callsign: "KTAL",
     streamUrl: "https://ktal.broadcasttool.stream/stream",
     logo: "/logos/ktal-lp.jpg",
-    genre: "United States"
+    place: "New Mexico, United States",
+    country: "United States",
+    website: "https://www.lccommunityradio.org",
+    bitrate: 192
   },
   {
     id: "ktcu",
     name: "KTCU",
+    callsign: "KTCU",
     streamUrl: "https://ktcustream.tcu.edu/",
     logo: "/logos/ktcu.png",
-    genre: "College • USA"
+    genre: "College • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://ktcu.tcu.edu/"
   },
   {
     id: "ktna",
     name: "KTNA",
+    callsign: "KTNA",
     streamUrl: "https://ktna.broadcasttool.stream/play",
     logo: "/logos/ktna.jpg",
-    genre: "News • Talkeetna"
+    place: "Talkeetna, Alaska",
+    country: "United States",
+    website: "http://ktna.org",
+    bitrate: 128,
+    genres: ["news"]
   },
   {
     id: "ktru",
     name: "KTRU",
+    callsign: "KTRU",
     streamUrl: "https://n02-us.rcs.revma.com/uevdenv2ss8uv?rj-ttl=5&rj-tok=AAABn78SYC4AzgfQIzfMM4PbLg",
     logo: "/logos/ktru.png",
-    genre: "Houston"
+    place: "Houston, TX",
+    country: "United States",
+    website: "http://www.ktru.org/"
   },
   {
     id: "ktsw-fm-89-9-san-marcos",
     name: "KTSW",
+    callsign: "KTSW",
     streamUrl: "https://ktswlive.txstate.edu:8102/listen",
     logo: "/logos/ktsw-fm-89-9-san-marcos.jpg",
-    genre: "United States"
+    place: "Texas, United States",
+    country: "United States",
+    website: "http://ktsw.net",
+    bitrate: 96
   },
   {
     id: "kuci",
     name: "KUCI",
+    callsign: "KUCI",
     streamUrl: "https://streamer.kuci.org/high",
     logo: "/logos/kuci.png",
-    genre: "KUCI 88.9 FM • UC Irvine"
+    genre: "KUCI 88.9 FM • UC Irvine",
+    place: "Irvine, CA",
+    country: "United States",
+    website: "http://www.kuci.org/"
   },
   {
     id: "kunm",
     name: "KUNM",
+    callsign: "KUNM",
     streamUrl: "https://29325.live.streamtheworld.com/KUNMFM_128.mp3",
     logo: "/logos/kunm.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://www.kunm.org/"
   },
   {
     id: "jazz-and-more",
     name: "KUNV",
+    callsign: "KUNV",
     streamUrl: "https://kunv.oit.unlv.edu/stream/1/",
     logo: "/logos/jazz-and-more.png",
-    genre: "United States"
+    place: "Nevada, United States",
+    country: "United States",
+    frequency: "91.5 FM",
+    website: "http://www.kunv.org",
+    bitrate: 256
   },
   {
     id: "kuoi",
@@ -751,98 +1158,154 @@ export const DEFAULT_STATIONS = [
   {
     id: "kuvo",
     name: "KUVO",
+    callsign: "KUVO",
     streamUrl: "https://kuvo.streamguys1.com/kuvo-mp3-128",
     logo: "/logos/kuvo.png",
-    genre: "Jazz, News • Denver"
+    place: "Denver, Colorado",
+    country: "United States",
+    website: "https://www.kuvo.org",
+    bitrate: 128,
+    genres: ["jazz","news"]
   },
   {
     id: "kvcu-radio-1190",
     name: "KVCU",
+    callsign: "KVCU",
     streamUrl: "https://radio.garden/api/ara/content/listen/vxqa6HTr/channel.mp3?1730758410709",
     logo: "/logos/kvcu-radio-1190.png",
-    genre: "United States"
+    place: "United States",
+    country: "United States",
+    website: "https://1190.radio",
+    bitrate: 128
   },
   {
     id: "91-3-kvlu-beaumont",
     name: "KVLU",
+    callsign: "KVLU",
     streamUrl: "https://kvlustream.lamar.edu:8443/stream",
     logo: "/logos/91-3-kvlu-beaumont.png",
-    genre: "News • Beaumont"
+    place: "Beaumont, Texas",
+    country: "United States",
+    website: "http://www.kvlu.org/",
+    genres: ["news"]
   },
   {
     id: "kvmr",
     name: "KVMR",
+    callsign: "KVMR",
     streamUrl: "https://sslstream.kvmr.org:9433/aac96#.mp3",
     logo: "/logos/kvmr.png",
-    genre: "Comunity • USA"
+    genre: "Comunity • USA",
+    place: "Northern California, United States",
+    country: "United States",
+    website: "https://www.radiorethink.com/listen/kvmr/",
+    bitrate: 96
   },
   {
     id: "kvnf",
     name: "KVNF",
+    callsign: "KVNF",
     streamUrl: "https://peridot.streamguys1.com:7145/live.mp3",
     logo: "/logos/kvnf.png",
-    genre: "Paonia"
+    place: "Paonia, CO",
+    country: "United States",
+    website: "http://www.kvnf.org/"
   },
   {
     id: "kwmr-90-5-89-9",
     name: "KWMR",
+    callsign: "KWMR",
     streamUrl: "https://listen.kwmr.org/live",
     logo: "/logos/kwmr-90-5-89-9.png",
-    genre: "United States"
+    place: "United States",
+    country: "United States",
+    frequency: "92.3 FM",
+    website: "http://kwmr.org"
   },
   {
     id: "kwtf",
     name: "KWTF",
+    callsign: "KWTF",
     streamUrl: "https://s35.myradiostream.com:33726/listen.mp3?nocache=1785616487",
-    genre: "Santa Rosa"
+    place: "Santa Rosa, CA",
+    country: "United States",
+    website: "http://www.kwtf.net/",
+    bitrate: 192
   },
   {
     id: "kwvh",
     name: "KWVH",
+    callsign: "KWVH",
     streamUrl: "https://ice41.securenetsystems.net/KWVH",
-    genre: "United States"
+    place: "Texas, United States",
+    country: "United States",
+    website: "https://www.kwvh.org/"
   },
   {
     id: "kxci",
     name: "KXCI",
+    callsign: "KXCI",
     streamUrl: "https://kxci.broadcasttool.stream:80/play",
     logo: "/logos/kxci.png",
-    genre: "Tucson's Community Radio"
+    genre: "Tucson's Community Radio",
+    place: "Arizona, United States",
+    country: "United States",
+    frequency: "91.3 FM",
+    website: "http://www.kxci.org/",
+    bitrate: 96
   },
   {
     id: "kxlu",
     name: "KXLU",
+    callsign: "KXLU",
     streamUrl: "https://kxlu.streamguys1.com/kxlu-hi",
     logo: "/logos/kxlu.png",
-    genre: "Los Angeles"
+    place: "Los Angeles, CA",
+    country: "United States",
+    website: "http://www.kxlu.com/",
+    bitrate: 320
   },
   {
     id: "kxsf-lp",
     name: "KXSF",
+    callsign: "KXSF",
     streamUrl: "https://streams.radio.co/sd1bcd1376/listen#.mp3",
     logo: "/logos/kxsf-lp.jpg",
-    genre: "Country, Electronic • United States"
+    place: "CA, United States",
+    country: "United States",
+    frequency: "102.5 FM",
+    website: "http://kxsf.fm",
+    genres: ["country","electronic","jazz","punk","rock","soul"]
   },
   {
     id: "kxua",
     name: "KXUA",
+    callsign: "KXUA",
     streamUrl: "https://listen.kxua.com/stream",
     logo: "/logos/kxua.png",
-    genre: "Fayetteville"
+    place: "Fayetteville, AR",
+    country: "United States",
+    website: "http://kxua.uark.edu/"
   },
   {
     id: "kzfr",
     name: "KZFR",
+    callsign: "KZFR",
     streamUrl: "https://listen.kzfr.org/stream",
     logo: "/logos/kzfr.png",
-    genre: "Chico"
+    place: "Chico, CA",
+    country: "United States",
+    website: "http://www.kzfr.org/"
   },
   {
     id: "kzmu",
     name: "KZMU",
+    callsign: "KZMU",
     streamUrl: "https://kzmu.streamguys1.com/live",
     logo: "/logos/kzmu.jpg",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://www.kzmu.org/"
   },
   {
     id: "kzsc",
@@ -854,8 +1317,11 @@ export const DEFAULT_STATIONS = [
   {
     id: "kzsu",
     name: "KZSU",
+    callsign: "KZSU",
     streamUrl: "https://kzsu-streams.stanford.edu/kzsu-1-128.mp3",
-    genre: "Palo Alto"
+    place: "Palo Alto, CA",
+    country: "United States",
+    website: "http://kzsu.stanford.edu/"
   },
   {
     id: "kzum",
@@ -867,30 +1333,47 @@ export const DEFAULT_STATIONS = [
   {
     id: "lemellotron",
     name: "LeMellotron",
+    callsign: "LeMellotron",
     streamUrl: "https://listen.radioking.com/radio/477719/stream/534044",
     logo: "/logos/lemellotron.png",
-    genre: "France"
+    place: "France",
+    country: "France",
+    website: "https://www.lemellotron.com/"
   },
   {
     id: "luxuriamusic",
     name: "Luxuria Music",
+    callsign: "Luxuria Music",
     streamUrl: "https://ice10.securenetsystems.net/LUXOTRON",
     logo: "/logos/luxuriamusic.png",
-    genre: "Electronic • USA"
+    genre: "Electronic • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://luxuriamusic.com/",
+    bitrate: 64,
+    genres: ["electronic","jazz"]
   },
   {
     id: "nessradio",
     name: "Ness Radio",
+    callsign: "Ness Radio",
     streamUrl: "https://radio.nessradio.net:8212/nessradio-hd",
     logo: "/logos/nessradio.jpg",
-    genre: "Morocco"
+    place: "Morocco",
+    country: "Morocco",
+    website: "https://nessradio.com/",
+    genres: ["variety"]
   },
   {
     id: "newtownradio",
     name: "Newtown Radio",
+    callsign: "Newtown Radio",
     streamUrl: "https://streaming.radio.co/s0d090ee43/listen",
     logo: "/logos/newtownradio.ico",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://newtownradio.com/",
+    genres: ["disco","electronic","experimental","hip-hop","house","metal","pop","world"]
   },
   {
     id: "nts1",
@@ -909,102 +1392,157 @@ export const DEFAULT_STATIONS = [
   {
     id: "ohiofm",
     name: "OHIO FM",
+    callsign: "OHIO FM",
     streamUrl: "https://stream.radio.co/s5f6fd6c6f/listen",
-    genre: "Columbus"
+    place: "Columbus, OH",
+    country: "United States",
+    website: "http://ohio.fm/"
   },
   {
     id: "purefm",
     name: "Pure FM",
+    callsign: "Pure FM",
     streamUrl: "https://redbeemedia.streamabc.net/redbm-tipik-mp3-160-1909468?sABC=6n6r4so4%230%239q45sp5988805pn765865n1s09r186p3%23ei&aw_0_1st.playerid=rv&amsparams=playerid:rv;skey:1785614260",
-    genre: "Belgium"
+    place: "Belgium",
+    country: "Belgium",
+    website: "https://www.rtbf.be/pure/"
   },
   {
     id: "radio6023",
     name: "Radio 6023",
+    callsign: "Radio 6023",
     streamUrl: "https://stream12.top-ix.org/radio6023",
     logo: "/logos/radio6023.jpg",
-    genre: "Italy"
+    place: "Italy",
+    country: "Italy",
+    website: "https://6023.it/station/6023-ascoltaci/"
   },
   {
     id: "radioactive2",
     name: "Radio Active",
+    callsign: "Radio Active",
     streamUrl: "https://streamyourdream.org:8050/radioactive",
     logo: "/logos/radioactive2.png",
-    genre: "Greece"
+    place: "Greece",
+    country: "Greece",
+    website: "https://radioactivefm.gr/",
+    genres: ["electronic","rock","variety","world"]
   },
   {
     id: "radiocampuslille",
     name: "Radio Campus Lille",
+    callsign: "Radio Campus Lille",
     streamUrl: "https://radiocampuslille.ice.infomaniak.ch/radiocampuslille-128",
     logo: "/logos/radiocampuslille.png",
-    genre: "France"
+    place: "France",
+    country: "France",
+    website: "http://www.campuslille.com/",
+    bitrate: 128
   },
   {
     id: "radiocardiff",
     name: "Radio Cardiff",
+    callsign: "Radio Cardiff",
     streamUrl: "https://radiocardiff.radioca.st/stream",
-    genre: "United Kingdom"
+    place: "United Kingdom",
+    country: "United Kingdom",
+    website: "https://radiocardiff.org/"
   },
   {
     id: "radiocentraal",
     name: "Radio Centraal",
+    callsign: "Radio Centraal",
     streamUrl: "https://streams.movemedia.eu/centraal",
     logo: "/logos/radiocentraal.ico",
-    genre: "Belgium"
+    place: "Belgium",
+    country: "Belgium",
+    website: "http://www.radiocentraal.be/Realescape/",
+    genres: ["rock","world"]
   },
   {
     id: "radiodepaul",
     name: "Radio Depaul",
+    callsign: "Radio Depaul",
     streamUrl: "https://ice26.securenetsystems.net/RADIODEPAUL",
-    genre: "United States"
+    place: "United States",
+    country: "United States",
+    website: "https://radiodepaul.com/"
   },
   {
     id: "radiodio",
     name: "Radio Dio",
+    callsign: "Radio Dio",
     streamUrl: "https://live.aurafm.org/RadioDio",
     logo: "/logos/radiodio.ico",
-    genre: "Dub • France"
+    place: "Dub • France",
+    country: "France",
+    website: "https://radiodio.org/",
+    genres: ["hip-hop","reggae","rock"]
   },
   {
     id: "radio-free-brooklyn",
     name: "Radio Free Brooklyn",
+    callsign: "Radio Free Brooklyn",
     streamUrl: "https://patmos.cdnstream.com/proxy/ttenney1/?mp=/listen&esPlayer&cb=239941.mp3",
     logo: "/logos/radio-free-brooklyn.png",
-    genre: "What Brooklyn Sounds Like"
+    genre: "What Brooklyn Sounds Like",
+    place: "United States",
+    country: "United States",
+    website: "https://radiofreebrooklyn.com/"
   },
   {
     id: "radionova",
     name: "Radio Nova",
+    callsign: "Radio Nova",
     streamUrl: "https://novazz.ice.infomaniak.ch/novazz-128.mp3",
     logo: "/logos/radionova.png",
-    genre: "France"
+    place: "France",
+    country: "France",
+    website: "https://www.nova.fr/"
   },
   {
     id: "radioone91fm",
     name: "Radio One 91FM",
+    callsign: "Radio One 91FM",
     streamUrl: "https://play.r1.co.nz/live",
     logo: "/logos/radioone91fm.png",
-    genre: "Community Radio • New Zealand"
+    place: "Community Radio • New Zealand",
+    country: "New Zealand",
+    website: "https://www.r1.co.nz/",
+    genres: ["disco","electronic","indigenous","news","pop","punk"]
   },
   {
     id: "radioparadise",
     name: "Radio Paradise",
+    callsign: "Radio Paradise",
     streamUrl: "https://stream.radioparadise.com/mp3-320",
     logo: "/logos/radioparadise.png",
-    genre: "Community radio"
+    genre: "Community radio",
+    place: "Paradise, CA",
+    country: "United States",
+    website: "https://www.radioparadise.com/",
+    bitrate: 320,
+    genres: ["indie","rock"]
   },
   {
     id: "radiogrenouille",
     name: "RadioGrenouille",
+    callsign: "RadioGrenouille",
     streamUrl: "https://live.radiogrenouille.com:8443/live",
-    genre: "France"
+    place: "France",
+    country: "France",
+    website: "http://www.radiogrenouille.com/"
   },
   {
     id: "radiok",
     name: "RadioK",
+    callsign: "RadioK",
     streamUrl: "https://radiok.broadcasttool.stream/play_256",
     logo: "/logos/radiok.gif",
-    genre: "Campus • USA"
+    genre: "Campus • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://radiok.org/"
   },
   {
     id: "radiostadmontfoort",
@@ -1016,93 +1554,147 @@ export const DEFAULT_STATIONS = [
   {
     id: "radyobilkent",
     name: "Radyo Bilkent",
+    callsign: "Radyo Bilkent",
     streamUrl: "https://stream.netradyom.com/listen/radyobilkent/radio.mp3",
-    genre: "Türkiye"
+    place: "Türkiye",
+    country: "Türkiye",
+    website: "https://www.radyobilkent.com/"
   },
   {
     id: "radyoeksen",
     name: "Radyo Eksen",
+    callsign: "Radyo Eksen",
     streamUrl: "https://eksenwmp.radyotvonline.com/;stream.mp3",
     logo: "/logos/radyoeksen.png",
-    genre: "Alternative • Türkiye"
+    place: "Alternative • Türkiye",
+    country: "Türkiye",
+    website: "https://radioeksen.com/",
+    bitrate: 224,
+    genres: ["indie","rock"]
   },
   {
     id: "radyoodtu",
     name: "Radyo ODTU",
+    callsign: "Radyo ODTU",
     streamUrl: "https://stream3.radyoodtu.com.tr/;",
-    genre: "Türkiye"
+    place: "Türkiye",
+    country: "Türkiye",
+    website: "http://www.radyoodtu.com.tr/",
+    bitrate: 128
   },
   {
     id: "rinsefm",
     name: "Rinse FM",
+    callsign: "Rinse FM",
     streamUrl: "https://admin.stream.rinse.fm/proxy/rinse_uk/stream",
-    genre: "United Kingdom"
+    place: "United Kingdom",
+    country: "United Kingdom",
+    website: "https://www.rinse.fm/"
   },
   {
     id: "rtrfm",
     name: "RTRfm",
+    callsign: "RTRfm",
     streamUrl: "https://live.rtrfm.com.au/stream1",
     logo: "/logos/rtrfm.webp",
-    genre: "Australia"
+    place: "Australia",
+    country: "Australia",
+    website: "https://rtrfm.com.au/"
   },
   {
     id: "sohoradio",
     name: "Soho Radio",
+    callsign: "Soho Radio",
     streamUrl: "https://sohoradiomusic.doughunt.co.uk:8010/128mp3",
     logo: "/logos/sohoradio.jpg",
-    genre: "Culture • UK"
+    genre: "Culture • UK",
+    place: "United Kingdom",
+    country: "United Kingdom",
+    website: "https://sohoradiolondon.com/",
+    bitrate: 128,
+    genres: ["variety"]
   },
   {
     id: "soundartradio",
     name: "Soundart Radio",
+    callsign: "Soundart Radio",
     streamUrl: "https://radio.canstream.co.uk:8134/live.mp3",
-    genre: "Electronic, Experimental • United Kingdom"
+    place: "United Kingdom",
+    country: "United Kingdom",
+    website: "https://www.soundartradio.org.uk/",
+    genres: ["electronic","experimental"]
   },
   {
     id: "thelion",
     name: "The LION",
+    callsign: "The LION",
     streamUrl: "https://n08.radiojar.com/k9uw1tyr7x8uv?rj-ttl=5&rj-tok=AAABn78SpfgAgyTHTkzCBY06rQ",
-    genre: "University Park"
+    place: "University Park, PA",
+    country: "United States",
+    website: "http://thelion.fm/"
   },
   {
     id: "the-roots-fm",
     name: "The Roots FM",
+    callsign: "The Roots FM",
     streamUrl: "https://ice6.securenetsystems.net/ROOTS2",
     logo: "/logos/the-roots-fm.png",
-    genre: "United States"
+    place: "Missouri, United States",
+    country: "United States",
+    website: "https://theroots.fm/",
+    bitrate: 128
   },
   {
     id: "thewolf",
     name: "The Wolf",
+    callsign: "The Wolf",
     streamUrl: "https://cloud.revma.ihrhls.com/zc4101?rj-org=n12b-e2&rj-ttl=5&rj-tok=AAABn78TYj0AO0RtoxEFjaWcYA",
-    genre: "Carrollton"
+    place: "Carrollton, GA",
+    country: "United States",
+    website: "https://thewolf.ca/"
   },
   {
     id: "tropico-fm",
     name: "Tropico FM",
+    callsign: "Tropico FM",
     streamUrl: "https://kffi.broadcasttool.stream/stream",
     logo: "/logos/tropico-fm.png",
-    genre: "United States"
+    place: "Idaho, United States",
+    country: "United States",
+    website: "http://www.tropico.fm",
+    bitrate: 320
   },
   {
     id: "tube-city-online-radio",
     name: "Tube City Online Radio",
+    callsign: "Tube City Online Radio",
     streamUrl: "https://tubecityonline.out.airtime.pro/tubecityonline_a",
     logo: "/logos/tube-city-online-radio.png",
-    genre: "News • United States"
+    place: "Pennsylvania, United States",
+    country: "United States",
+    website: "http://www.tubecityonline.com/radio",
+    bitrate: 128,
+    genres: ["news"]
   },
   {
     id: "uclaradio",
     name: "UCLAradio",
+    callsign: "UCLAradio",
     streamUrl: "https://live.uclaradio.com/listen/ucla_radio/radio.mp3",
     logo: "/logos/uclaradio.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://uclaradio.com/"
   },
   {
     id: "volnafm",
     name: "Volna FM",
+    callsign: "Volna FM",
     streamUrl: "https://listen5.myradio24.com/nvolna",
-    genre: "Electronic, Pop • Russia"
+    place: "Russia",
+    country: "Russia",
+    website: "https://volna.fm/",
+    genres: ["electronic","pop","rock"]
   },
   {
     id: "wayo",
@@ -1114,16 +1706,24 @@ export const DEFAULT_STATIONS = [
   {
     id: "wbcrlp",
     name: "WBCR-lp",
+    callsign: "WBCR-lp",
     streamUrl: "https://s3.citrus3.com:8114/stream",
     logo: "/logos/wbcrlp.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "http://www.berkshireradio.org/"
   },
   {
     id: "wber",
     name: "WBER",
+    callsign: "WBER",
     streamUrl: "https://radio.monroe.edu/wber.mp3",
     logo: "/logos/wber.jpg",
-    genre: "Alternative Rock • USA"
+    genre: "Alternative Rock • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wber.org/",
+    genres: ["rock"]
   },
   {
     id: "wbny",
@@ -1135,71 +1735,117 @@ export const DEFAULT_STATIONS = [
   {
     id: "wbor",
     name: "WBOR",
+    callsign: "WBOR",
     streamUrl: "https://listen.wbor.org/",
     logo: "/logos/wbor.png",
-    genre: "College • USA"
+    genre: "College • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wbor.org/"
   },
   {
     id: "wcbn",
     name: "WCBN",
+    callsign: "WCBN",
     streamUrl: "https://floyd.wcbn.org:8443/wcbn-hd.mp3",
     logo: "/logos/wcbn.png",
-    genre: "FM Ann Arbor"
+    genre: "FM Ann Arbor",
+    place: "Ann Arbor, United States",
+    country: "United States",
+    website: "https://wcbn.org/"
   },
   {
     id: "wcdb",
     name: "WCDB",
+    callsign: "WCDB",
     streamUrl: "https://streams.wcdb.fm/stream",
     logo: "/logos/wcdb.jpg",
-    genre: "24/7 • USA"
+    genre: "24/7 • USA",
+    place: "United States",
+    country: "United States",
+    website: "http://wcdbfm.com/",
+    genres: ["rock"]
   },
   {
     id: "wcfa",
     name: "WCFA",
+    callsign: "WCFA",
     streamUrl: "https://wcfa.broadcasttool.stream/play",
     logo: "/logos/wcfa.jpg",
-    genre: "United States"
+    place: "New Jersey, United States",
+    country: "United States",
+    website: "http://www.capemayradio.org",
+    bitrate: 192
   },
   {
     id: "wchc",
     name: "WCHC",
+    callsign: "WCHC",
     streamUrl: "https://s2.radio.co/sc161fe4c9/listen",
     logo: "/logos/wchc.png",
-    genre: "Alternative • USA"
+    genre: "Alternative • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.holycross.edu/community/get-involved/student-clubs-organizations/wchc-881fm",
+    genres: ["rock"]
   },
   {
     id: "wcom-lp-carrboro-community-radio-cooperative",
     name: "WCOM",
+    callsign: "WCOM",
     streamUrl: "https://audio-mp3.ibiblio.org/wcom-hifi.mp3",
     logo: "/logos/wcom-lp-carrboro-community-radio-cooperative.png",
-    genre: "Carrboro"
+    place: "Carrboro, North Carolina",
+    country: "United States",
+    website: "http://www.wcomfm.org",
+    bitrate: 120
   },
   {
     id: "wcuw",
     name: "WCUW",
+    callsign: "WCUW",
     streamUrl: "https://wcuw.org/wp-content/uploads/2026/07/Speilberg_Porter-fundraiser-aired-8-6-26.mp3",
     logo: "/logos/wcuw.png",
-    genre: "Americana • USA"
+    genre: "Americana • USA",
+    place: "Massachusetts, United States",
+    country: "United States",
+    frequency: "91.3 FM",
+    website: "https://www.wcuw.org",
+    genres: ["americana","blues","classical","european","folk","world"]
   },
   {
     id: "wdbm",
     name: "WDBM",
+    callsign: "WDBM",
     streamUrl: "https://play.impact89fm.org:8000/impact89fm",
     logo: "/logos/wdbm.png",
-    genre: "Alternative • USA"
+    genre: "Alternative • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://impact89fm.org/",
+    genres: ["rock"]
   },
   {
     id: "wdce-richmond",
     name: "WDCE",
+    callsign: "WDCE",
     streamUrl: "https://streaming.live365.com/a39711",
     logo: "/logos/wdce-richmond.jpg",
-    genre: "Richmond"
+    place: "Richmond, United States",
+    country: "United States",
+    frequency: "90.1 FM",
+    website: "http://www.wdce.net",
+    bitrate: 128
   },
   {
     id: "wdcr",
     name: "WDCR",
+    callsign: "WDCR",
     streamUrl: "https://14223.live.streamtheworld.com/DC_RADIO.mp3",
-    genre: "Hanover"
+    place: "Hanover, NH",
+    country: "United States",
+    website: "http://www.webdcr.com/",
+    bitrate: 96
   },
   {
     id: "wdcv",
@@ -1211,28 +1857,44 @@ export const DEFAULT_STATIONS = [
   {
     id: "wdiy",
     name: "WDIY",
+    callsign: "WDIY",
     streamUrl: "https://war.streamguys1.com:7883/wdiy_7880",
-    genre: "Lehigh Valley"
+    place: "Lehigh Valley, PA",
+    country: "United States",
+    website: "http://wdiy.org/",
+    bitrate: 128
   },
   {
     id: "wdrt",
     name: "WDRT",
+    callsign: "WDRT",
     streamUrl: "https://audio.wdrt.org:8000/high",
-    genre: "Viroqua"
+    place: "Viroqua, Wisconsin",
+    country: "United States",
+    bitrate: 192
   },
   {
     id: "weft",
     name: "WEFT",
+    callsign: "WEFT",
     streamUrl: "https://weft.broadcasttool.stream/stream",
     logo: "/logos/weft.jpg",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://weft.org/"
   },
   {
     id: "95-7-fm-welt",
     name: "WELT",
+    callsign: "WELT",
     streamUrl: "https://stream.laut.fm/irrlichts-welt",
     logo: "/logos/95-7-fm-welt.png",
-    genre: "Noise • Germany"
+    place: "Germany",
+    country: "Germany",
+    frequency: "95.7 FM",
+    website: "http://www.weltfm.org",
+    bitrate: 128,
+    genres: ["noise"]
   },
   {
     id: "wers",
@@ -1244,62 +1906,106 @@ export const DEFAULT_STATIONS = [
   {
     id: "88-1-wesu-middletown",
     name: "WESU",
+    callsign: "WESU",
     streamUrl: "https://listen.wesufm.org/stream",
     logo: "/logos/88-1-wesu-middletown.gif",
-    genre: "News, Syndicated • Middletown"
+    place: "Middletown, Connecticut",
+    country: "United States",
+    website: "http://wesufm.org",
+    bitrate: 128,
+    genres: ["news","syndicated"]
   },
   {
     id: "wets-americana",
     name: "WETS Americana",
+    callsign: "WETS Americana",
     streamUrl: "https://wets-fm.streamguys1.com/live-2",
-    genre: "Americana, News • United States"
+    place: "Tennessee, United States",
+    country: "United States",
+    bitrate: 96,
+    genres: ["americana","news"]
   },
   {
     id: "wets-news",
     name: "WETS News",
+    callsign: "WETS Classical",
     streamUrl: "https://wets-fm.streamguys1.com/live-3",
-    genre: "News • United States"
+    place: "Tennessee, United States",
+    country: "United States",
+    bitrate: 96,
+    genres: ["news"]
   },
   {
     id: "wevl-memphis",
     name: "WEVL",
+    callsign: "WEVL",
     streamUrl: "https://wevl.streamguys1.com/live",
     logo: "/logos/wevl-memphis.jpg",
-    genre: "Hip-hop, Rock • Memphis"
+    place: "Memphis, Tennessee",
+    country: "United States",
+    frequency: "89.9 FM",
+    website: "https://wevl.org",
+    bitrate: 32,
+    genres: ["hip-hop","rock","variety"]
   },
   {
     id: "wfmu",
     name: "WFMU",
+    callsign: "WFMU",
     streamUrl: "https://stream0.wfmu.org/freeform-128k",
     logo: "/logos/wfmu.svg",
-    genre: "Freeform • Jersey City"
+    genre: "Freeform • Jersey City",
+    place: "United States",
+    country: "United States",
+    website: "https://wfmu.org/",
+    genres: ["variety"]
   },
   {
     id: "wfuv",
     name: "WFUV",
+    callsign: "WFUV",
     streamUrl: "https://onair.wfuv.org/onair-aacplus",
     logo: "/logos/wfuv.ico",
-    genre: "Adult Album Alternative • USA"
+    genre: "Adult Album Alternative • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wfuv.org/",
+    genres: ["indie","pop","rock"]
   },
   {
     id: "whav-lp",
     name: "WHAV",
+    callsign: "WHAV",
     streamUrl: "https://whav.streamguys1.com/live",
     logo: "/logos/whav-lp.jpg",
-    genre: "Oldies • United States"
+    place: "Massachusetts, United States",
+    country: "United States",
+    website: "http://www.WHAV.net",
+    bitrate: 128,
+    genres: ["oldies"]
   },
   {
     id: "whcl",
     name: "WHCL",
+    callsign: "WHCL",
     streamUrl: "https://wchl.streamon.fm/wchl-24k.aac",
-    genre: "News • Chapel Hill"
+    place: "Chapel Hill, North Carolina",
+    country: "United States",
+    frequency: "88.7 FM",
+    website: "http://www.whcl.org",
+    bitrate: 32,
+    genres: ["news"]
   },
   {
     id: "whrb",
     name: "WHRB",
+    callsign: "WHRB",
     streamUrl: "https://stream.whrb.org/whrb-he-aac",
     logo: "/logos/whrb.png",
-    genre: "Cambridge"
+    place: "Cambridge, MA",
+    country: "United States",
+    website: "http://whrb.org/",
+    bitrate: 128
   },
   {
     id: "whrv",
@@ -1311,64 +2017,101 @@ export const DEFAULT_STATIONS = [
   {
     id: "whrw",
     name: "WHRW",
+    callsign: "WHRW",
     streamUrl: "https://stream.whrwfm.org:8443/new",
     logo: "/logos/whrw.png",
-    genre: "Classical • USA"
+    genre: "Classical • USA",
+    place: "New York, United States",
+    country: "United States",
+    website: "https://whrw.fm",
+    genres: ["classical","experimental","folk","hip-hop","jazz","punk","talk"]
   },
   {
     id: "wicb",
     name: "WICB",
+    callsign: "WICB",
     streamUrl: "https://icecast.do.zufall.co/wicb_mp3_high",
-    genre: "Ithaca"
+    place: "Ithaca, NY",
+    country: "United States",
+    website: "http://www.wicb.org/",
+    bitrate: 96
   },
   {
     id: "90-5-wicn-fm",
     name: "WICN",
+    callsign: "WICN",
     streamUrl: "https://wicn-ice.streamguys1.com/live-mp3",
     logo: "/logos/90-5-wicn-fm.gif",
-    genre: "Blues, Folk • United States"
+    place: "Massachusetts, United States",
+    country: "United States",
+    website: "http://playlists.jazzworks.net/?date=20201029",
+    bitrate: 256,
+    genres: ["blues","folk","jazz","news"]
   },
   {
     id: "widr",
     name: "WIDR",
+    callsign: "WIDR",
     streamUrl: "https://widrfm.net/stream",
     logo: "/logos/widr.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://www.widrfm.org/"
   },
   {
     id: "witr",
     name: "WITR",
+    callsign: "WITR",
     streamUrl: "https://streaming.witr.rit.edu/live-aac-96",
     logo: "/logos/witr.jpg",
-    genre: "College Radio • USA"
+    genre: "College Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://witr.rit.edu/"
   },
   {
     id: "wkcr",
     name: "WKCR",
+    callsign: "WKCR",
     streamUrl: "https://wkcr.streamguys1.com//live",
     logo: "/logos/wkcr.png",
-    genre: "New York"
+    place: "New York, NY",
+    country: "United States",
+    website: "http://www.studentaffairs.columbia.edu/wkcr/"
   },
   {
     id: "wknc",
     name: "WKNC",
+    callsign: "WKNC",
     streamUrl: "https://das-edge62-live365-dal03.cdnstream.com/a30009",
     logo: "/logos/wknc.png",
-    genre: "NC State College Radio"
+    genre: "NC State College Radio",
+    place: "United States",
+    country: "United States",
+    website: "https://wknc.org/",
+    genres: ["indie","variety"]
   },
   {
     id: "wknc-hd-2-raleigh",
     name: "WKNC-HD2",
+    callsign: "WKNC-HD2",
     streamUrl: "https://streaming.live365.com/a45877",
     logo: "/logos/wknc-hd-2-raleigh.png",
-    genre: "Blues, Classical • United States"
+    place: "North Carolina, United States",
+    country: "United States",
+    bitrate: 192,
+    genres: ["blues","classical","hip-hop","indie","jazz","rock","soul","variety"]
   },
   {
     id: "wluw2",
     name: "WLUW",
+    callsign: "WLUW",
     streamUrl: "https://ice26.securenetsystems.net/WLUW?playSessionID=AD47E8CB-E610-56AC-09E96DB77F17E09B",
     logo: "/logos/wluw2.webp",
-    genre: "Independent Radio • USA"
+    genre: "Independent Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wluw.org/"
   },
   {
     id: "wmbr",
@@ -1380,30 +2123,52 @@ export const DEFAULT_STATIONS = [
   {
     id: "wmcn",
     name: "WMCN",
+    callsign: "WMCN",
     streamUrl: "https://audio-edge-vqwx4.yyz.g.radiomast.io/0786c562-432d-4d2b-a4b6-fda1a2f60cf7",
     logo: "/logos/wmcn.png",
-    genre: "United States"
+    place: "Minnesota, United States",
+    country: "United States",
+    frequency: "91.7 FM",
+    website: "http://www.wmcn.fm/",
+    bitrate: 128
   },
   {
     id: "wmhb",
     name: "WMHB",
+    callsign: "WMHB",
     streamUrl: "https://streaming.live365.com/a46702",
     logo: "/logos/wmhb.png",
-    genre: "Rock, Talk • United States"
+    place: "Maine, United States",
+    country: "United States",
+    frequency: "89.7 FM",
+    website: "http://wmhbradio.org",
+    bitrate: 192,
+    genres: ["rock","talk","variety"]
   },
   {
     id: "wmmt",
     name: "WMMT",
+    callsign: "WMMT",
     streamUrl: "https://aurora.shoutca.st/radio/8200/radio.mp3?",
     logo: "/logos/wmmt.png",
-    genre: "Variety • United States"
+    place: "Kentucky, United States",
+    country: "United States",
+    frequency: "88.7 FM",
+    website: "http://www.wmmt.org",
+    bitrate: 128,
+    genres: ["variety"]
   },
   {
     id: "wmnf",
     name: "WMNF",
+    callsign: "WMNF",
     streamUrl: "https://stream.wmnf.org/wmnf_high_quality",
     logo: "/logos/wmnf.png",
-    genre: "Community Radio • USA"
+    genre: "Community Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.wmnf.org/",
+    genres: ["rock","talk","variety"]
   },
   {
     id: "wmrw",
@@ -1415,60 +2180,100 @@ export const DEFAULT_STATIONS = [
   {
     id: "wmsc",
     name: "WMSC",
+    callsign: "WMSC",
     streamUrl: "https://peridot.streamguys1.com:5485/live-mp3",
     logo: "/logos/wmsc.png",
-    genre: "Rock • Upper Montclair"
+    place: "Upper Montclair, New Jersey",
+    country: "United States",
+    frequency: "90.3 FM",
+    website: "http://wmscradio.com",
+    bitrate: 96,
+    genres: ["rock"]
   },
   {
     id: "wmtu",
     name: "WMTU",
+    callsign: "WMTU",
     streamUrl: "https://stream.wmtu.fm/wmtu-live",
     logo: "/logos/wmtu.webp",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://wmtu.fm/"
   },
   {
     id: "91-1-fm-wmua",
     name: "WMUA",
+    callsign: "WMUA",
     streamUrl: "https://usa5.fastcast4u.com/proxy/qernhlca?mp=/1",
-    genre: "United States"
+    place: "Massachusetts, United States",
+    country: "United States",
+    frequency: "91.1 FM",
+    website: "http://www.wmua.org",
+    bitrate: 128
   },
   {
     id: "wncu-fm-90-7-durham",
     name: "WNCU",
+    callsign: "WNCU",
     streamUrl: "https://wncu.streamguys1.com/live",
-    genre: "Jazz • United States"
+    place: "North Carolina, United States",
+    country: "United States",
+    website: "http://wncu.org",
+    bitrate: 128,
+    genres: ["jazz"]
   },
   {
     id: "wncw",
     name: "WNCW",
+    callsign: "WNCW",
     streamUrl: "https://wncw-live-a.edge.audiocdn.com/6286_56k.aac",
-    genre: "Spindale"
+    place: "Spindale, NC",
+    country: "United States",
+    website: "http://wncw.org/"
   },
   {
     id: "wnmc",
     name: "WNMC",
+    callsign: "WNMC",
     streamUrl: "https://s4.yesstreaming.net:17170/stream",
     logo: "/logos/wnmc.jpg",
-    genre: "United States"
+    place: "Michigan, United States",
+    country: "United States",
+    frequency: "90.7 FM",
+    website: "http://www.wnmc.org",
+    bitrate: 192
   },
   {
     id: "wnur",
     name: "WNUR",
+    callsign: "WNUR",
     streamUrl: "https://n04-us.rcs.revma.com/w4pmmfkdx4zuv?rj-ttl=5&rj-tok=AAABn78TEPcANOKXDRa9_kW5Og",
-    genre: "Chicago"
+    place: "Chicago, IL",
+    country: "United States",
+    website: "http://www.wnur.org/"
   },
   {
     id: "wnyc",
     name: "WNYC",
+    callsign: "WNYC",
     streamUrl: "https://fm939.wnyc.org/wnycfm.mp3",
     logo: "/logos/wnyc.png",
-    genre: "News • USA"
+    genre: "News • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.wnyc.org/",
+    bitrate: 96,
+    genres: ["news"]
   },
   {
     id: "wnyu",
     name: "WNYU",
+    callsign: "WNYU",
     streamUrl: "https://www.wnyu-ice-cast-relay.com/wnyu.mp3",
-    genre: "New York"
+    place: "New York, NY",
+    country: "United States",
+    website: "http://wnyu.org/",
+    bitrate: 128
   },
   {
     id: "worldmusicradio",
@@ -1480,50 +2285,82 @@ export const DEFAULT_STATIONS = [
   {
     id: "worldwidefm",
     name: "Worldwide FM",
+    callsign: "Worldwide FM",
     streamUrl: "https://worldwide-fm.radiocult.fm/stream",
-    genre: "Electronic, Jazz • United Kingdom"
+    place: "United Kingdom",
+    country: "United Kingdom",
+    website: "https://www.worldwidefm.net/",
+    genres: ["electronic","jazz","world"]
   },
   {
     id: "wort",
     name: "WORT",
+    callsign: "WORT",
     streamUrl: "https://stream.wortfm.org:8443/high.mp3",
     logo: "/logos/wort.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://www.wortfm.org/"
   },
   {
     id: "wowd",
     name: "WOWD",
+    callsign: "WOWD",
     streamUrl: "https://wowd.broadcasttool.stream/stream",
     logo: "/logos/wowd.jpg",
-    genre: "Variety • United States"
+    place: "Maryland, United States",
+    country: "United States",
+    frequency: "94.3 FM",
+    website: "http://takomaradio.org/",
+    bitrate: 320,
+    genres: ["variety"]
   },
   {
     id: "wpkn-89-5-fm-bridgeport",
     name: "WPKN",
+    callsign: "WPKN",
     streamUrl: "https://ice25.securenetsystems.net/WPKN",
     logo: "/logos/wpkn-89-5-fm-bridgeport.png",
-    genre: "Talk • United States"
+    place: "Connecticut, United States",
+    country: "United States",
+    website: "http://www.wpkn.org",
+    bitrate: 64,
+    genres: ["talk"]
   },
   {
     id: "wppm-lp-philadelphia",
     name: "WPPM",
+    callsign: "WPPM",
     streamUrl: "https://phillycam.radioca.st/stream",
     logo: "/logos/wppm-lp-philadelphia.jpg",
-    genre: "Philadelphia"
+    place: "Philadelphia, Pennsylvania (Philadelphia)",
+    country: "United States",
+    frequency: "106.5 FM",
+    website: "https://wppm.phillycam.org/",
+    bitrate: 192
   },
   {
     id: "wprb-princeton",
     name: "WPRB",
+    callsign: "WPRB",
     streamUrl: "https://wprb.streamguys1.com/live",
     logo: "/logos/wprb-princeton.png",
-    genre: "Indie, Variety • Princeton"
+    place: "Princeton, New Jersey",
+    country: "United States",
+    frequency: "103.3 FM",
+    website: "http://wprb.com/",
+    bitrate: 96,
+    genres: ["indie","variety"]
   },
   {
     id: "wprk",
     name: "WPRK",
+    callsign: "WPRK",
     streamUrl: "https://wprk.broadcasttool.stream:80/stream",
     logo: "/logos/wprk.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://wprk.org/"
   },
   {
     id: "wpts",
@@ -1535,22 +2372,36 @@ export const DEFAULT_STATIONS = [
   {
     id: "wras",
     name: "WRAS",
+    callsign: "WRAS",
     streamUrl: "https://gpb.streamguys1.com/gpb-atlanta-mp3-website",
     logo: "/logos/wras.png",
-    genre: "Album 88 • Georgia State"
+    genre: "Album 88 • Georgia State",
+    place: "United States",
+    country: "United States",
+    website: "https://www.gpb.org/radio/stations/wras",
+    bitrate: 256,
+    genres: ["news"]
   },
   {
     id: "wrbb",
     name: "WRBB",
+    callsign: "WRBB",
     streamUrl: "https://audio-edge-qse4n.yyz.g.radiomast.io/dafd1179-5404-4939-9c1c-a014c6964254",
     logo: "/logos/wrbb.png",
-    genre: "College Radio • USA"
+    genre: "College Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wrbbradio.org/"
   },
   {
     id: "wrfl",
     name: "WRFL",
+    callsign: "WRFL",
     streamUrl: "https://wrfl.fm:8002/stream/1",
-    genre: "Lexington"
+    place: "Lexington, KY",
+    country: "United States",
+    website: "http://wrfl.fm/",
+    bitrate: 192
   },
   {
     id: "wrir",
@@ -1562,15 +2413,24 @@ export const DEFAULT_STATIONS = [
   {
     id: "wriu",
     name: "WRIU",
+    callsign: "WRIU",
     streamUrl: "https://main-auto.wriu.org/listen/wriu-fm/radio.mp3",
-    genre: "Kingston"
+    place: "Kingston, RI",
+    country: "United States",
+    website: "http://wriu.org/",
+    bitrate: 192
   },
   {
     id: "wrpi",
     name: "WRPI",
+    callsign: "WRPI",
     streamUrl: "https://stream.wrpi.org/mp3-320.mp3",
     logo: "/logos/wrpi.png",
-    genre: "College • USA"
+    genre: "College • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wrpi.org/",
+    genres: ["talk"]
   },
   {
     id: "wruv",
@@ -1582,36 +2442,56 @@ export const DEFAULT_STATIONS = [
   {
     id: "wrvu",
     name: "WRVU",
+    callsign: "WRVU",
     streamUrl: "https://streaming.wrvu.org/live",
-    genre: "Nashville"
+    place: "Nashville, TN",
+    country: "United States",
+    website: "http://www.wrvu.org/"
   },
   {
     id: "scr",
     name: "WSCR",
+    callsign: "WSCR",
     streamUrl: "https://stream.abacast.net/direct/audacy-wscrfmmp3-imc",
     logo: "/logos/scr.jpg",
-    genre: "Sports, Talk • United States"
+    place: "Illinois, United States",
+    country: "United States",
+    website: "http://sandwichradio.org",
+    bitrate: 64,
+    genres: ["sports","talk"]
   },
   {
     id: "wsoe",
     name: "WSOE",
+    callsign: "WSOE",
     streamUrl: "https://audio-mp3.ibiblio.org/wsoe.mp3",
     logo: "/logos/wsoe.webp",
-    genre: "Alternative • USA"
+    genre: "Alternative • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.wsoeelon.com/",
+    genres: ["rock"]
   },
   {
     id: "wtip",
     name: "WTIP",
+    callsign: "WTIP",
     streamUrl: "https://wtip.broadcasttool.stream/stream",
     logo: "/logos/wtip.png",
-    genre: "Community Radio • USA"
+    genre: "Community Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wtip.org/"
   },
   {
     id: "wtul",
     name: "WTUL",
+    callsign: "WTUL",
     streamUrl: "https://stream.wtulneworleans.com/",
     logo: "/logos/wtul.png",
-    genre: "New Orleans"
+    place: "New Orleans, LA",
+    country: "United States",
+    website: "http://www.wtul.fm/"
   },
   {
     id: "wumm",
@@ -1623,50 +2503,78 @@ export const DEFAULT_STATIONS = [
   {
     id: "wusb",
     name: "WUSB",
+    callsign: "WUSB",
     streamUrl: "https://stream.wusb.stonybrook.edu:8092/listen.pl/relay?type=http",
-    genre: "Stonybrook"
+    place: "Stonybrook, NY",
+    country: "United States",
+    website: "http://www.wusb.fm/",
+    bitrate: 128
   },
   {
     id: "wvbr",
     name: "WVBR",
+    callsign: "WVBR",
     streamUrl: "https://das-edge14-live365-dal02.cdnstream.com/a25496",
     logo: "/logos/wvbr.ico",
-    genre: "College Radio • USA"
+    genre: "College Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.wvbr.com/"
   },
   {
     id: "wvew",
     name: "WVEW",
+    callsign: "WVEW",
     streamUrl: "https://audio-edge-n9hx8.yul.o.radiomast.io/20b6f77f-2177-46a2-b461-437a84273d5f",
     logo: "/logos/wvew.jpg",
-    genre: "Brattleboro"
+    place: "Brattleboro, VT",
+    country: "United States",
+    website: "http://www.wvew.org/",
+    bitrate: 256
   },
   {
     id: "wvkr",
     name: "WVKR",
+    callsign: "WVKR",
     streamUrl: "https://26733.live.streamtheworld.com/WVKRFM.mp3",
     logo: "/logos/wvkr.png",
-    genre: "College • USA"
+    genre: "College • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.wvkr.org/"
   },
   {
     id: "wvud",
     name: "WVUD",
+    callsign: "WVUD",
     streamUrl: "https://streaming.radio.co/s1bc6bf517/listen",
     logo: "/logos/wvud.png",
-    genre: "USA"
+    place: "Delaware, United States",
+    country: "United States",
+    website: "http://www.wvud.org"
   },
   {
     id: "wwoz-new-orleans",
     name: "WWOZ",
+    callsign: "WWOZ",
     streamUrl: "https://wwoz-sc.streamguys1.com/wwozhd2-hi",
     logo: "/logos/wwoz-new-orleans.jpg",
-    genre: "New Orleans"
+    place: "New Orleans, United States",
+    country: "United States",
+    frequency: "90.7 FM",
+    website: "http://wwoz.org",
+    bitrate: 128
   },
   {
     id: "wwuh",
     name: "WWUH",
+    callsign: "WWUH",
     streamUrl: "https://stream3477.egihosting.com:8002/;?type=http&nocache=27523",
     logo: "/logos/wwuh.jpg",
-    genre: "United States"
+    place: "CT, United States",
+    country: "United States",
+    website: "https://www.wwuh.org/",
+    bitrate: 128
   },
   {
     id: "wxdu",
@@ -1678,57 +2586,97 @@ export const DEFAULT_STATIONS = [
   {
     id: "wxou",
     name: "WXOU",
+    callsign: "WXOU",
     streamUrl: "https://a8.asurahosting.com/listen/wxou/radio.mp3",
     logo: "/logos/wxou.png",
-    genre: "College Radio • USA"
+    genre: "College Radio • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.wxou.org/"
   },
   {
     id: "wxox",
     name: "WXOX",
+    callsign: "WXOX",
     streamUrl: "https://patmos.cdnstream.com/proxy/artfmin1/?mp=/stream",
     logo: "/logos/wxox.jpg",
-    genre: "Variety • USA"
+    genre: "Variety • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://www.artxfm.com/",
+    genres: ["news","variety"]
   },
   {
     id: "wxpr",
     name: "WXPR",
+    callsign: "WXPR",
     streamUrl: "https://amber.streamguys1.com:4372/wxpr2",
     logo: "/logos/wxpr.jpg",
-    genre: "News • Rhinelander"
+    place: "Rhinelander, Wisconsin",
+    country: "United States",
+    frequency: "91.7 FM",
+    website: "http://www.wxpr.org",
+    bitrate: 128,
+    genres: ["news"]
   },
   {
     id: "wxyc",
     name: "WXYC",
+    callsign: "WXYC",
     streamUrl: "https://audio-mp3.ibiblio.org/wxyc.mp3",
     logo: "/logos/wxyc.png",
-    genre: "Freeform • USA"
+    genre: "Freeform • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wxyc.org/",
+    genres: ["variety"]
   },
   {
     id: "wyar",
     name: "WYAR",
+    callsign: "WYAR",
     streamUrl: "https://stationplaylist.com:7124/listen.mp3",
     logo: "/logos/wyar.jpg",
-    genre: "Jazz, Oldies • United States"
+    place: "Maine, United States",
+    country: "United States",
+    website: "http://wyar.org",
+    genres: ["jazz","oldies"]
   },
   {
     id: "wysu",
     name: "WYSU",
+    callsign: "WYSU",
     streamUrl: "https://live.streamguys1.com:3181/hd2",
-    genre: "Classical • USA"
+    genre: "Classical • USA",
+    place: "United States",
+    country: "United States",
+    website: "https://wysu.org/",
+    genres: ["classical"]
   },
   {
     id: "wyxr",
     name: "WYXR",
+    callsign: "WYXR",
     streamUrl: "https://crosstown.streamguys1.com:80/live",
     logo: "/logos/wyxr.png",
-    genre: "Arts, Variety • United States"
+    place: "Tennessee, United States",
+    country: "United States",
+    frequency: "91.7 FM",
+    website: "https://www.wyxr.org/",
+    bitrate: 128,
+    genres: ["arts","variety"]
   },
   {
     id: "wzbc",
     name: "WZBC",
+    callsign: "WZBC",
     streamUrl: "https://stream.wzbc.org/wzbc",
     logo: "/logos/wzbc.png",
-    genre: "Boston College"
+    genre: "Boston College",
+    place: "Boston, MA",
+    country: "United States",
+    website: "http://www.wzbc.org/",
+    bitrate: 128
   },
   {
     id: "wzbt",
@@ -1740,23 +2688,33 @@ export const DEFAULT_STATIONS = [
   {
     id: "wzrd-chicago",
     name: "WZRD",
+    callsign: "WZRD",
     streamUrl: "https://wzrd.streamguys1.com/live",
     logo: "/logos/wzrd-chicago.jpg",
-    genre: "United States"
+    place: "Illinois, United States",
+    country: "United States",
+    website: "http://www.wzrdchicago.org",
+    bitrate: 96
   },
   {
     id: "xrayfm",
     name: "XRAY FM",
+    callsign: "XRAY FM",
     streamUrl: "https://listen.xray.fm/stream",
     logo: "/logos/xrayfm.png",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://www.xray.fm/"
   },
   {
     id: "ynotradio",
     name: "YNOT Radio",
+    callsign: "YNOT Radio",
     streamUrl: "https://das-edge16-live365-dal02.cdnstream.com/a54553",
     logo: "/logos/ynotradio.ico",
-    genre: "USA"
+    place: "United States",
+    country: "United States",
+    website: "https://www.ynotradio.net/"
   }
 ];
 

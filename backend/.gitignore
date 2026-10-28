@@ -1,4 +1,6 @@
 node_modules/
 tokens.json
 config.json
+twitch-channels.json
+station-taps.json
 data/
