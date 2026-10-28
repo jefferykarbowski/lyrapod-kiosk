@@ -9,12 +9,13 @@ import { useKeyboard } from './contexts/KeyboardContext';
 import Navigation from './components/navigation/Navigation';
 import FloatingHomeButton from './components/navigation/FloatingHomeButton';
 import KioskSettings from './components/navigation/KioskSettings';
-import NowPlaying from './components/player/NowPlaying';
+import PlayerBar from './components/player/PlayerBar';
 import StationGrid from './components/stations/StationGrid';
 import VolumeControl from './components/widgets/VolumeControl';
 import NewsTicker from './components/widgets/NewsTicker';
 import MixcloudTab from './components/tabs/MixcloudTab';
 import SpotifyTab from './components/tabs/SpotifyTab';
+import TwitchTab from './components/twitch/TwitchTab';
 import KeyboardToggle from './components/KeyboardToggle';
 import Screensaver from './components/Screensaver';
 import SplashScreen from './components/SplashScreen';
@@ -92,22 +93,28 @@ function AppContent() {
         </div>
       </header>
 
-      {/* ---- Score --------------------------------------------------------- */}
-      <main className="min-h-0 flex-1 overflow-y-auto">
-        {activeTab === 'radio' && (
-          <div className="grid gap-px lg:grid-cols-[minmax(300px,26%)_1fr]" style={{ background: 'var(--ink-3)' }}>
-            <div style={{ background: 'var(--ink)' }}>
-              <NowPlaying />
-            </div>
-            <div className="p-4" style={{ background: 'var(--ink)' }}>
-              <StationGrid />
-            </div>
+      {/* ---- Score --------------------------------------------------------- *
+        * The radio and Twitch staves manage their own scrolling, because each
+        * holds a list beside something that must stay put — a genre rail, a
+        * video stage. The two un-converted staves still scroll as one page.
+        */}
+      <main className="min-h-0 flex-1 overflow-hidden">
+        {activeTab === 'radio' && <StationGrid />}
+        {activeTab === 'twitch' && <TwitchTab />}
+
+        {(activeTab === 'mixcloud' || activeTab === 'spotify') && (
+          <div className="h-full overflow-y-auto">
+            {activeTab === 'mixcloud' && <MixcloudTab />}
+            {activeTab === 'spotify' && <SpotifyTab />}
           </div>
         )}
-
-        {activeTab === 'mixcloud' && <MixcloudTab />}
-        {activeTab === 'spotify' && <SpotifyTab />}
       </main>
+
+      {/* ---- Transport ----------------------------------------------------- *
+        * Persistent, and outside <main>, so moving between staves never cuts
+        * the stream. It draws nothing at all until something is loaded.
+        */}
+      <PlayerBar />
 
       {/* ---- Ticker -------------------------------------------------------- */}
       {!isKeyboardOpen && (

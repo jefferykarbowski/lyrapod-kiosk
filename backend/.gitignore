@@ -1,4 +1,5 @@
 node_modules/
 tokens.json
 config.json
+twitch-channels.json
 data/

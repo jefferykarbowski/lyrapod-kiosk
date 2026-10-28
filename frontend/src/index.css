@@ -111,6 +111,69 @@
   .rule-live {
     background: var(--sig);
   }
+
+  /* ---- Station cell ---------------------------------------------------- *
+   * A cell in the station index. Defined by its seams and its ground, never
+   * by shadow or blur.
+   *
+   * The index renders all 255 stations at once rather than virtualising:
+   * in-page find and ordinary focus order are worth more here than the
+   * scroll performance, and `content-visibility` gets most of that back by
+   * letting the browser skip the cells that are off screen. The remembered
+   * intrinsic size keeps the scrollbar honest as they come and go.
+   */
+  .cell {
+    background: var(--ink-2);
+    content-visibility: auto;
+    contain-intrinsic-size: auto 124px;
+    transition: background-color 180ms var(--draw);
+  }
+
+  .cell:hover {
+    background: var(--ink-3);
+  }
+
+  .cell--live {
+    background: var(--ink-3);
+  }
+
+  /* ---- The dial -------------------------------------------------------- *
+   * The transport's top hairline is the dial: it carries the live source
+   * colour, and the needle marks where the loaded station sits on the band —
+   * the list on the view you are looking at — so next and previous visibly
+   * turn something. The needle sits proud of the rule, the way a needle sits
+   * proud of its scale.
+   */
+  .dial {
+    position: relative;
+    height: 1px;
+  }
+
+  .dial-needle {
+    position: absolute;
+    top: -2px;
+    width: 2px;
+    height: 5px;
+    margin-left: -1px;
+    background: var(--sig);
+    transition: left 260ms var(--draw);
+  }
+
+  /* ---- Marquee --------------------------------------------------------- *
+   * Long titles in the tight transport. Runs only when the text genuinely
+   * overflows: the component measures and sets --marquee-shift, and leaves it
+   * at 0 when the title fits.
+   */
+  .marquee > span {
+    display: inline-block;
+    animation: marquee 16s linear infinite;
+  }
+
+  @keyframes marquee {
+    0%, 12%  { transform: translateX(0); }
+    52%, 64% { transform: translateX(var(--marquee-shift, 0)); }
+    100%     { transform: translateX(0); }
+  }
 }
 
 /* ---- Marks: motion is drawing ------------------------------------------ */
@@ -202,8 +265,24 @@
   .comb-rule,
   .whistler,
   .stipple,
-  .animate-scroll {
+  .animate-scroll,
+  .marquee > span {
     animation: none;
+  }
+
+  /* A marquee that cannot scroll must not silently clip the title it was
+     scrolling; it becomes an ordinary truncation instead. */
+  .marquee {
+    text-overflow: ellipsis;
+  }
+
+  .marquee > span {
+    transform: none;
+  }
+
+  /* The needle lands on its new stop instead of sliding to it. */
+  .dial-needle {
+    transition: none;
   }
 
   .comb-rule { transform: scaleY(0.7); opacity: 0.8; }

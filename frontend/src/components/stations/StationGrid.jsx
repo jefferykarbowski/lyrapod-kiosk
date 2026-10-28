@@ -1,105 +1,191 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRadio } from '../../contexts/RadioContext';
-import { StationMark } from '../marks/Marks';
+import { useBand } from '../../hooks/useBand';
+import { toRadioEntries } from '../../lib/band';
+import { GENRES } from '../../config/genres';
+import GenreRail, { GenreStrip } from './GenreRail';
+import StationCard from './StationCard';
+import { classNames } from '../../lib/format';
 
 /**
- * The station index — every station is a cell in the score carrying its own
- * mark. The live cell is identified by the source colour on its left seam and
- * by its mark moving, never by a fill or a glow.
+ * The station index.
+ *
+ * The genre rail filters, the sort orders, and whatever is listed *is the
+ * dial*: next, previous and shuffle step through exactly these stations in
+ * exactly this order, so narrowing to Jazz turns the transport into a jazz
+ * tuner without a separate control for it.
  */
 export default function StationGrid() {
-  const { stations, currentStation, isPlaying, playStation } = useRadio();
-  const [imageErrors, setImageErrors] = useState({});
+  const { stations, nowPlaying, status, metadata, playStation } = useRadio();
+  const [genre, setGenre] = useState(null);
+  const [sort, setSort] = useState('name');
 
-  const handleImageError = (id) => setImageErrors((prev) => ({ ...prev, [id]: true }));
+  const genreNames = useMemo(
+    () => new Map(GENRES.map((entry) => [entry.slug, entry.name])),
+    [],
+  );
+
+  const counts = useMemo(() => {
+    const tally = new Map();
+    for (const station of stations) {
+      for (const slug of station.genres ?? []) {
+        tally.set(slug, (tally.get(slug) ?? 0) + 1);
+      }
+    }
+    return tally;
+  }, [stations]);
+
+  const unfiled = useMemo(
+    () => stations.filter((station) => !station.genres?.length).length,
+    [stations],
+  );
+
+  const visible = useMemo(() => {
+    const filtered =
+      genre === null
+        ? stations
+        : genre === 'unfiled'
+          ? stations.filter((station) => !station.genres?.length)
+          : stations.filter((station) => station.genres?.includes(genre));
+
+    // Named 'place' rather than 'country' because that is the string shown:
+    // stations whose place soundtap never established sort to the end rather
+    // than under an invented heading.
+    if (sort === 'place') {
+      return [...filtered].sort((a, b) => {
+        if (!a.place) return b.place ? 1 : 0;
+        if (!b.place) return -1;
+        return a.place.localeCompare(b.place, 'en', { sensitivity: 'base' })
+          || a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+      });
+    }
+    return filtered;
+  }, [stations, genre, sort]);
+
+  const band = useMemo(
+    () => ({
+      key: `stations:${genre ?? 'all'}:${sort}`,
+      label: genre === null
+        ? 'All stations'
+        : genre === 'unfiled'
+          ? 'Unfiled'
+          : (genreNames.get(genre) ?? genre),
+      entries: toRadioEntries(visible),
+    }),
+    [visible, genre, sort, genreNames],
+  );
+  useBand(band);
+
+  const loadedId = nowPlaying?.station?.id ?? null;
 
   if (!stations.length) {
     return (
-      <div className="panel p-8 text-center">
+      <div className="panel m-4 p-8 text-center">
         <p className="stave-label">No stations</p>
-        <p className="mt-2 text-sm text-chalk-2">
-          The station list could not be loaded. Check the backend connection.
+        <p className="mt-2 text-sm" style={{ color: 'var(--chalk-2)' }}>
+          The station catalogue could not be loaded.
         </p>
       </div>
     );
   }
 
   return (
-    <section aria-label="Stations">
-      <header className="mb-3 flex items-baseline justify-between">
-        <h2 className="stave-label">Stations</h2>
-        <span className="font-mono text-xs text-chalk-3 tnum">{stations.length}</span>
-      </header>
+    <div className="flex h-full min-h-0 gap-px" style={{ background: 'var(--ink-3)' }}>
+      {/* The rail gets its own column where there is room for one. */}
+      <aside
+        className="hidden w-[208px] flex-shrink-0 lg:block"
+        style={{ background: 'var(--ink-2)' }}
+      >
+        <GenreRail
+          genres={GENRES}
+          counts={counts}
+          unfiled={unfiled}
+          active={genre}
+          onSelect={setGenre}
+          total={stations.length}
+        />
+      </aside>
 
-      <div className="grid grid-cols-2 gap-px xl:grid-cols-3" style={{ background: 'var(--ink-3)' }}>
-        {stations.map((station) => {
-          const active = currentStation?.id === station.id;
-          const live = active && isPlaying;
-          // Track and artist deliberately live only in the realization panel:
-          // repeating them here made the active cell grow and shove the grid.
-          const useFallback = !station.logo || imageErrors[station.id];
+      <section
+        aria-label="Stations"
+        className="flex min-h-0 min-w-0 flex-1 flex-col"
+        style={{ background: 'var(--ink)' }}
+      >
+        <div className="lg:hidden">
+          <GenreStrip
+            genres={GENRES}
+            counts={counts}
+            unfiled={unfiled}
+            active={genre}
+            onSelect={setGenre}
+            total={stations.length}
+          />
+        </div>
 
-          return (
-            <button
-              key={station.id}
-              onClick={() => playStation(station)}
-              aria-current={active ? 'true' : undefined}
-              className="group relative flex min-h-[92px] items-start gap-3 p-3 text-left transition-colors duration-200"
-              style={{ background: active ? 'var(--ink-3)' : 'var(--ink-2)' }}
-            >
-              {/* Live seam — the only place the source colour appears in a cell. */}
-              <span
-                aria-hidden="true"
-                className="absolute bottom-0 left-0 top-0 transition-all duration-300"
-                style={{ width: active ? 3 : 0, background: 'var(--sig-green)' }}
-              />
+        <header className="flex flex-shrink-0 items-center justify-between gap-3 px-4 py-2.5 seam-b">
+          <p className="min-w-0 truncate">
+            <span className="stave-label">{band.label}</span>
+            <span className="ml-2 font-mono text-[12px] tnum" style={{ color: 'var(--chalk-3)' }}>
+              {visible.length}
+            </span>
+          </p>
 
-              {/* Station identity: real logo where one exists, its mark otherwise. */}
-              <span
-                className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden"
-                style={{ border: '1px solid var(--ink-4)' }}
+          <div className="flex flex-shrink-0 items-center gap-px" role="group" aria-label="Order">
+            {[
+              ['name', 'A–Z'],
+              ['place', 'By place'],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setSort(key)}
+                aria-pressed={sort === key}
+                className="tap px-3 text-[13px]"
+                style={{
+                  background: sort === key ? 'var(--ink-3)' : 'transparent',
+                  color: sort === key ? 'var(--chalk)' : 'var(--chalk-2)',
+                  border: '1px solid var(--ink-3)',
+                }}
               >
-                {!useFallback ? (
-                  <img
-                    src={station.logo}
-                    alt=""
-                    className="h-full w-full object-contain p-0.5"
-                    loading="lazy"
-                    onError={() => handleImageError(station.id)}
-                  />
-                ) : (
-                  <span className="block h-6 w-8" style={{ color: 'var(--sig-green)' }}>
-                    <StationMark name={station.name} playing={live} className="h-full w-full" />
-                  </span>
-                )}
-              </span>
+                {label}
+              </button>
+            ))}
+          </div>
+        </header>
 
-              <span className="min-w-0 flex-1">
-                <span
-                  className="block truncate text-[15px] font-semibold leading-tight"
-                  style={{ color: active ? 'var(--chalk)' : 'var(--chalk)' }}
-                >
-                  {station.name}
-                </span>
-                <span className="mt-0.5 block truncate text-[13px]" style={{ color: 'var(--chalk-3)' }}>
-                  {station.genre}
-                </span>
-              </span>
-
-              {/* Playing: a small live comb rather than an icon badge. */}
-              {live && (
-                <span
-                  aria-label="Playing"
-                  className="block h-5 w-6 flex-shrink-0"
-                  style={{ color: 'var(--sig-green)' }}
-                >
-                  <StationMark name={station.name} playing className="h-full w-full" />
-                </span>
+        {visible.length === 0 ? (
+          <p className="p-8 text-center text-sm" style={{ color: 'var(--chalk-2)' }}>
+            No station in the catalogue carries this genre.
+          </p>
+        ) : (
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <ul
+              className={classNames(
+                'grid gap-px',
+                'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4',
               )}
-            </button>
-          );
-        })}
-      </div>
-    </section>
+              style={{ background: 'var(--ink-3)' }}
+            >
+              {visible.map((station) => {
+                const loaded = loadedId === station.id;
+                return (
+                  <li key={station.id} className="flex">
+                    <StationCard
+                      station={station}
+                      loaded={loaded}
+                      live={loaded && status === 'playing'}
+                      connecting={loaded && status === 'connecting'}
+                      metadata={metadata}
+                      onPlay={playStation}
+                      highlightGenre={genre === 'unfiled' ? null : genre}
+                      genreNames={genreNames}
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

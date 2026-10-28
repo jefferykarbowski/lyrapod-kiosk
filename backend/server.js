@@ -2096,6 +2096,292 @@ app.get('/api/mixcloud/favorites-updates', async (req, res) => {
 });
 
 // ============================================
+// TWITCH
+// ============================================
+//
+// A Twitch channel is video, so it plays in the frontend's embed rather than
+// through the <audio> element the radio stations use. What the backend adds is
+// the part the embed cannot answer: which of the listener's channels are
+// actually live right now, and what they are streaming.
+//
+// Helix needs an app access token, which needs a client id and secret. Without
+// them every channel still plays — the kiosk simply does not claim to know
+// whether one is on air, rather than guessing or showing a stale badge.
+
+// Channel subscriptions live in their own file. config.json holds real secrets
+// and a branch checkout that untracks it deletes it, so the server never
+// rewrites that file; this one it owns and may recreate empty.
+const twitchChannelsPath = path.join(__dirname, 'twitch-channels.json');
+
+// Twitch logins: 4-25 characters, alphanumerics and underscore, not starting
+// with an underscore. Validated because the value reaches a request URL.
+const TWITCH_LOGIN = /^[a-zA-Z0-9][a-zA-Z0-9_]{3,24}$/;
+
+function loadTwitchChannels() {
+  try {
+    if (fs.existsSync(twitchChannelsPath)) {
+      const data = JSON.parse(fs.readFileSync(twitchChannelsPath, 'utf8'));
+      if (Array.isArray(data?.channels)) {
+        return data.channels.filter((login) => TWITCH_LOGIN.test(login));
+      }
+    }
+  } catch (e) {
+    console.error('[Twitch] Could not read channel list:', e.message);
+  }
+  return [];
+}
+
+function saveTwitchChannels(channels) {
+  try {
+    fs.writeFileSync(twitchChannelsPath, JSON.stringify({ channels }, null, 2));
+    return true;
+  } catch (e) {
+    console.error('[Twitch] Could not save channel list:', e.message);
+    return false;
+  }
+}
+
+let twitchChannels = loadTwitchChannels();
+let twitchAppToken = { value: null, expiresAt: 0 };
+// Helix answers are cached briefly: the frontend polls this while the Twitch
+// stave is open, and a live/offline state does not change second to second.
+let twitchCache = { at: 0, payload: null };
+const TWITCH_CACHE_MS = 30_000;
+
+const twitchConfigured = () =>
+  Boolean(config.twitch?.clientId && config.twitch?.clientSecret);
+
+/** An app access token, fetched on demand and reused until it expires. */
+async function getTwitchToken() {
+  if (!twitchConfigured()) return null;
+  if (twitchAppToken.value && Date.now() < twitchAppToken.expiresAt) {
+    return twitchAppToken.value;
+  }
+
+  const params = new URLSearchParams({
+    client_id: config.twitch.clientId,
+    client_secret: config.twitch.clientSecret,
+    grant_type: 'client_credentials',
+  });
+
+  try {
+    const response = await fetch(`https://id.twitch.tv/oauth2/token?${params}`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      console.error('[Twitch] Token request failed:', response.status);
+      return null;
+    }
+    const data = await response.json();
+    if (!data.access_token) return null;
+    twitchAppToken = {
+      value: data.access_token,
+      // A minute of headroom, so a token never expires mid-request.
+      expiresAt: Date.now() + Math.max(0, (data.expires_in ?? 3600) - 60) * 1000,
+    };
+    return twitchAppToken.value;
+  } catch (e) {
+    console.error('[Twitch] Token request error:', e.message);
+    return null;
+  }
+}
+
+async function helix(endpoint, logins, token) {
+  // Helix takes up to 100 logins per request; the kiosk will never have that
+  // many, but the query is built the same way regardless.
+  const params = new URLSearchParams();
+  const key = endpoint === 'streams' ? 'user_login' : 'login';
+  for (const login of logins.slice(0, 100)) params.append(key, login);
+
+  const response = await fetch(`https://api.twitch.tv/helix/${endpoint}?${params}`, {
+    headers: {
+      'Client-Id': config.twitch.clientId,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`helix/${endpoint} responded ${response.status}`);
+  }
+  const data = await response.json();
+  return data.data ?? [];
+}
+
+/**
+ * The subscribed channels, enriched with live state where that is knowable.
+ * `live` is deliberately null rather than false when it is not: "we cannot
+ * tell" and "it is off air" are different things, and the card says which.
+ */
+async function describeTwitchChannels() {
+  const channels = twitchChannels;
+  const configured = twitchConfigured();
+
+  if (channels.length === 0) {
+    return { configured, channels: [], stale: false };
+  }
+
+  if (!configured) {
+    return {
+      configured: false,
+      channels: channels.map((login) => ({
+        login,
+        displayName: login,
+        live: null,
+        title: null,
+        game: null,
+        viewers: null,
+        thumbnail: null,
+        profileImage: null,
+      })),
+      stale: false,
+    };
+  }
+
+  if (twitchCache.payload && Date.now() - twitchCache.at < TWITCH_CACHE_MS) {
+    const known = new Set(twitchCache.payload.channels.map((c) => c.login));
+    // The cache is only good while it covers exactly the current list.
+    if (known.size === channels.length && channels.every((login) => known.has(login))) {
+      return twitchCache.payload;
+    }
+  }
+
+  const token = await getTwitchToken();
+  if (!token) {
+    return {
+      configured: true,
+      channels: channels.map((login) => ({
+        login,
+        displayName: login,
+        live: null,
+        title: null,
+        game: null,
+        viewers: null,
+        thumbnail: null,
+        profileImage: null,
+      })),
+      stale: true,
+      error: 'Twitch would not issue a token. Check the client id and secret.',
+    };
+  }
+
+  try {
+    const [users, streams] = await Promise.all([
+      helix('users', channels, token),
+      helix('streams', channels, token),
+    ]);
+
+    const userByLogin = new Map(users.map((u) => [u.login.toLowerCase(), u]));
+    const streamByLogin = new Map(streams.map((s) => [s.user_login.toLowerCase(), s]));
+
+    const payload = {
+      configured: true,
+      stale: false,
+      channels: channels.map((login) => {
+        const key = login.toLowerCase();
+        const user = userByLogin.get(key);
+        const stream = streamByLogin.get(key);
+        return {
+          login,
+          displayName: user?.display_name ?? login,
+          // A login Twitch does not know at all is not "offline"; it is absent.
+          exists: Boolean(user),
+          live: user ? Boolean(stream) : null,
+          title: stream?.title ?? null,
+          game: stream?.game_name ?? null,
+          viewers: stream?.viewer_count ?? null,
+          startedAt: stream?.started_at ?? null,
+          thumbnail: stream?.thumbnail_url
+            ? stream.thumbnail_url.replace('{width}', '320').replace('{height}', '180')
+            : null,
+          profileImage: user?.profile_image_url ?? null,
+        };
+      }),
+    };
+
+    twitchCache = { at: Date.now(), payload };
+    return payload;
+  } catch (e) {
+    console.error('[Twitch] Helix request failed:', e.message);
+    return {
+      configured: true,
+      stale: true,
+      error: 'Could not reach Twitch. Live state is unknown.',
+      channels: channels.map((login) => ({
+        login,
+        displayName: login,
+        live: null,
+        title: null,
+        game: null,
+        viewers: null,
+        thumbnail: null,
+        profileImage: null,
+      })),
+    };
+  }
+}
+
+app.get('/api/twitch/status', async (req, res) => {
+  try {
+    res.json(await describeTwitchChannels());
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.post('/api/twitch/channels', async (req, res) => {
+  const raw = String(req.body?.login ?? '').trim().replace(/^@/, '');
+  // Accept a pasted channel URL as well as a bare login — on a touchscreen
+  // the URL is what gets typed.
+  const login = raw.replace(/^https?:\/\/(www\.)?twitch\.tv\//i, '').split(/[/?#]/)[0];
+
+  if (!TWITCH_LOGIN.test(login)) {
+    return res.status(400).json({ error: 'That is not a Twitch channel name.' });
+  }
+  if (twitchChannels.some((existing) => existing.toLowerCase() === login.toLowerCase())) {
+    return res.status(409).json({ error: `${login} is already on the list.` });
+  }
+
+  // Where credentials exist, refuse a channel Twitch has never heard of
+  // rather than adding a tile that can only ever fail to play.
+  if (twitchConfigured()) {
+    const token = await getTwitchToken();
+    if (token) {
+      try {
+        const users = await helix('users', [login], token);
+        if (users.length === 0) {
+          return res.status(404).json({ error: `Twitch has no channel called ${login}.` });
+        }
+      } catch (e) {
+        // Twitch unreachable: adding it is still the listener's call.
+        console.error('[Twitch] Could not verify channel:', e.message);
+      }
+    }
+  }
+
+  twitchChannels = [...twitchChannels, login];
+  twitchCache = { at: 0, payload: null };
+  if (!saveTwitchChannels(twitchChannels)) {
+    return res.status(500).json({ error: 'Added for this session, but could not be saved.' });
+  }
+  console.log(`[Twitch] Added channel: ${login}`);
+  res.json(await describeTwitchChannels());
+});
+
+app.delete('/api/twitch/channels/:login', async (req, res) => {
+  const login = String(req.params.login ?? '');
+  const before = twitchChannels.length;
+  twitchChannels = twitchChannels.filter(
+    (existing) => existing.toLowerCase() !== login.toLowerCase(),
+  );
+  if (twitchChannels.length === before) {
+    return res.status(404).json({ error: `${login} is not on the list.` });
+  }
+  twitchCache = { at: 0, payload: null };
+  saveTwitchChannels(twitchChannels);
+  console.log(`[Twitch] Removed channel: ${login}`);
+  res.json(await describeTwitchChannels());
+});
+
+// ============================================
 // KIOSK MODE - App Launcher Endpoints
 // ============================================
 

@@ -7,11 +7,11 @@
     "caveat": "verify-all-streams.py reports a TLS handshake failure for some hosts that browsers negotiate fine; entries it flagged were re-checked with curl before being dropped"
   },
   "totals": {
-    "lyrapod_before": 135,
+    "lyrapod_before": 255,
     "soundtap_carried": 236,
-    "overlap_upgraded": 101,
-    "added_from_soundtap": 135,
-    "lyrapod_only_kept": 32,
+    "overlap_upgraded": 225,
+    "added_from_soundtap": 11,
+    "lyrapod_only_kept": 30,
     "total": 255,
     "with_artwork": 207
   },
@@ -29,25 +29,8 @@
       "url": "https://wruw-stream.wruw.org/hls/stream.m3u8"
     }
   ],
-  "excluded_hls_lyrapod": [
-    {
-      "name": "The Lot Radio",
-      "url": "https://livepeercdn.studio/hls/85c28sa2o8wppm58/index.m3u8"
-    },
-    {
-      "name": "WRUW",
-      "url": "https://wruw-stream.wruw.org/hls/stream.m3u8"
-    }
-  ],
+  "excluded_hls_lyrapod": [],
   "collapsed_duplicate_stream": [
-    {
-      "name": "CHIRP Radio",
-      "url": "https://peridot.streamguys1.com:5185/live"
-    },
-    {
-      "name": "WLUW-FM",
-      "url": "https://ice26.securenetsystems.net/WLUW?playSessionID=AD47E8CB-E610-56AC-09E96DB77F17E09B"
-    },
     {
       "name": "KMSU-HD2",
       "url": "https://stream.aiir.com/ivdkskjmcnhuv"
@@ -61,7 +44,7 @@
       "url": "https://kala.streamguys1.com/live1"
     },
     {
-      "name": "WETS Classical",
+      "name": "WETS News",
       "url": "https://wets-fm.streamguys1.com/live-3"
     },
     {
@@ -71,6 +54,10 @@
   ],
   "dropped_dead": [
     {
+      "name": "BAU Radyo",
+      "url": "https://ssl120.radyotelekom.com.tr/8106/stream.mp4"
+    },
+    {
       "name": "KDFC",
       "url": "https://14093.live.streamtheworld.com/KDFCFM_SC"
     },
@@ -79,16 +66,12 @@
       "url": "https://29313.live.streamtheworld.com/KHSUFM.mp3"
     },
     {
-      "name": "WRCT",
-      "url": "https://stream.wrct.org/wrct-hi.mp3"
-    },
-    {
-      "name": "BAU Radyo",
-      "url": "https://ssl120.radyotelekom.com.tr/8106/stream.mp4"
-    },
-    {
       "name": "KRFF",
       "url": "https://mtl9.hnux.com/144.217.233.87:8166"
+    },
+    {
+      "name": "WRCT",
+      "url": "https://stream.wrct.org/wrct-hi.mp3"
     },
     {
       "name": "WUNH",

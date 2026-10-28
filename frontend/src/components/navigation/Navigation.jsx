@@ -17,25 +17,34 @@ function StaveMark({ kind, id, live }) {
  * colour identifies, motion indicates state.
  */
 export default function Navigation() {
-  const { activeTab, setActiveTab, stop, isPlaying } = useRadio();
+  const { activeTab, setActiveTab, stop, nowPlaying, isPlaying } = useRadio();
   const { enabled } = useSources();
 
   const handleSelect = useCallback(
     (source) => {
       if (activeTab === source.id) return;
       if (source.status !== 'live') return;
-      // Radio streams from an <audio> element; leaving the stave stops it.
-      if (source.id !== 'radio' && isPlaying) stop();
+
+      // Radio plays from an <audio> element that outlives the view, so leaving
+      // the stave no longer stops it — that is what the persistent transport
+      // is for. Twitch is the exception: its video embed is unmounted with the
+      // stave, so the audio stops whatever we do here, and clearing the
+      // transport is more honest than leaving it claiming to play.
+      if (nowPlaying?.source === 'twitch' && source.id !== 'twitch') stop();
+
       setActiveTab(source.id);
     },
-    [activeTab, setActiveTab, stop, isPlaying]
+    [activeTab, setActiveTab, stop, nowPlaying]
   );
 
   return (
     <nav aria-label="Listening sources" className="flex items-stretch">
       {enabled.map((source) => {
         const active = activeTab === source.id;
-        const live = active && isPlaying;
+        // A stave's mark moves when *that source* is sounding, which is no
+        // longer the same as the stave being on screen: the radio keeps
+        // playing while you read the Spotify stave, and the rail should say so.
+        const live = isPlaying && nowPlaying?.source === source.id;
 
         return (
           <button
